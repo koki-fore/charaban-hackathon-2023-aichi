@@ -48,7 +48,7 @@ const duymmyPost = {
   },
 }
 
-export const PostCard = ({ /** @type {PostResponse} */ post }) => {
+export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
   const [postRotate, setPostRotate] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [numLiked, setNumLiked] = useState(0)
@@ -87,7 +87,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post }) => {
     <>
       <Box
         className={`PostCard-wrapper ${postRotate && 'PostCard-wrapper--rotate'}`}
-        sx={{ maxWidth: 600, mx: 'auto', p: 2 }}
+        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2, height: 600 }}
         data-post-id={post.id}>
         <PostCardChild
           post={beforePost}

@@ -14,11 +14,11 @@ export const PostCardContent = ({ /** @type {Post} */ post, sx }) => {
   return (
     <>
       <Stack sx={sx}>
-        <Stack alignItems="center">
+        <Stack alignItems="center" sx={{ height: 400, width: 500, mx: 'auto' }}>
           <img
             src={post.picture_path}
             alt="image"
-            style={{ maxHeight: '500px', maxWidth: '300px' }}
+            style={{ height: '100%', maxHeight: 400, maxWidth: 500, objectFit: 'contain' }}
           />
         </Stack>
         <Box>
