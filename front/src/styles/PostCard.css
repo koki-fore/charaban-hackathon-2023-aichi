@@ -18,15 +18,9 @@
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.35);
   backface-visibility: hidden;
   --webkit-backface-visibility: hidden;
-}
-
-.PostCard-front {
-  position: absolute;
   background: #fff;
 }
 
 .PostCard-back {
-  position: absolute;
-  background: #fff;
   transform: rotateY(180deg);
 }

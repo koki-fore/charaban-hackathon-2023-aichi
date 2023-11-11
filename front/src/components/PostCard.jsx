@@ -1,7 +1,7 @@
 import '../styles/PostCard.css'
 import { PostCardHeader, PostCardContent, PostCardFooter } from './card'
 import { Box } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * @typedef {Object} User
@@ -52,6 +52,9 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
   const [postRotate, setPostRotate] = useState(false)
   const [isLiked, setIsLiked] = useState(false)
   const [numLiked, setNumLiked] = useState(0)
+  const [frontChildRef, setFrontChildRef] = useState(null)
+  const [backChildRef, setBackChildRef] = useState(null)
+  const [cardHeight, setCardHeight] = useState(0)
   post = duymmyPost
 
   const toggleRotate = () => {
@@ -83,11 +86,30 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
     }
   }
 
+  const calcHeight = (children) => {
+    return children.reduce((acc, cur) => {
+      const style = window.getComputedStyle(cur)
+      const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom)
+      const height = cur.offsetHeight + margin
+      return acc + height
+    }, 0)
+  }
+
+  useEffect(() => {
+    if (!frontChildRef || !backChildRef) return
+    const height = Math.max(
+      0,
+      calcHeight(Array.from(frontChildRef?.current?.children)) + 32,
+      calcHeight(Array.from(backChildRef?.current?.children)) + 32,
+    )
+    setCardHeight(height)
+  }, [frontChildRef, backChildRef])
+
   return (
     <>
       <Box
         className={`PostCard-wrapper ${postRotate && 'PostCard-wrapper--rotate'}`}
-        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2, height: 600 }}
+        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2, height: cardHeight }}
         data-post-id={post.id}>
         <PostCardChild
           post={beforePost}
@@ -96,6 +118,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
           handleLike={handleLike}
           isLiked={isLiked}
           numLiked={numLiked}
+          setChildRef={setFrontChildRef}
         />
         <PostCardChild
           post={afterPost}
@@ -104,6 +127,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
           handleLike={handleLike}
           isLiked={isLiked}
           numLiked={numLiked}
+          setChildRef={setBackChildRef}
         />
       </Box>
     </>
@@ -117,10 +141,24 @@ const PostCardChild = ({
   handleLike,
   isLiked,
   numLiked,
+  setChildRef,
+  sx,
 }) => {
+  const childRef = useRef(null)
+
+  useEffect(() => {
+    if (childRef.current) {
+      setChildRef(childRef)
+    }
+  }, [])
+
   return (
     <>
-      <Box className={className} sx={{ maxWidth: 600, mx: 'auto', p: 2 }} data-post-id={post.id}>
+      <Box
+        className={className}
+        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2 }}
+        data-post-id={post.id}
+        ref={childRef}>
         <PostCardHeader user={post.user} datetime={post.created_at} />
         <PostCardContent post={post} sx={{ mt: 2 }} />
         <PostCardFooter
