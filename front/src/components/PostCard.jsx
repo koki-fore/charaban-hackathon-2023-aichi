@@ -1,25 +1,15 @@
-import "../styles/PostCard.css";
+import '../styles/PostCard.css'
+import { PostCardHeader, PostCardContent, PostCardFooter } from './card'
+import { Box } from '@material-ui/core'
 
-export const PostCard = ({ /** @type {Post} */ post }) => {
+export const PostCard = ({ /** @type {Post} */ post, sx }) => {
   return (
-    <></>
-  );
-};
-
-const CardHeader = () => {
-  return (
-    <></>
-  );
-}
-
-const CardContent = () => {
-  return (
-    <></>
-  );
-}
-
-const CardFooter = () => {
-  return (
-    <></>
-  );
+    <>
+      <Box className="PostCard" sx={sx} data-post-id={post.id}>
+        <PostCardHeader />
+        <PostCardContent />
+        <PostCardFooter />
+      </Box>
+    </>
+  )
 }
