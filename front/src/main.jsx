@@ -15,6 +15,9 @@ const theme = createTheme({
     text: {
       primary: '#333',
     },
+    background: {
+      default: '#F8F9FA',
+    },
     grayText: '#979797',
     bgGray: '#F8F9FA',
     bgSky: '#84E9FF',
