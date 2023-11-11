@@ -1,7 +1,7 @@
 .PostCard-wrapper {
   position: relative;
   transform-style: preserve-3d;
-  transition: 1.2s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
 
 .PostCard-wrapper--rotate {

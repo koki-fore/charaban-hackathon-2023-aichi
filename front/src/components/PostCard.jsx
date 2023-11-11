@@ -37,7 +37,7 @@ const duymmyPost = {
   id: 1,
   user_FK: 1,
   before_picture_path: 'https://picsum.photos/200/300',
-  after_picture_path: 'https://picsum.photos/200/300',
+  after_picture_path: 'https://picsum.photos/400/300',
   after_text: 'after_text',
   before_text: 'before_text',
   created_at: '2021-10-01 00:00:00',
@@ -122,8 +122,9 @@ const PostCardChild = ({
     <>
       <Box className={className} sx={{ maxWidth: 600, mx: 'auto', p: 2 }} data-post-id={post.id}>
         <PostCardHeader user={post.user} datetime={post.created_at} />
-        <PostCardContent />
+        <PostCardContent post={post} sx={{ mt: 2 }} />
         <PostCardFooter
+          sx={{ mt: 2 }}
           toggleRotate={toggleRotate}
           handleLike={handleLike}
           isLiked={isLiked}
