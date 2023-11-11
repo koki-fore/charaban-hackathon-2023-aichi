@@ -1,26 +1,23 @@
-.PostCard-wrapper {
+.PostCard-content-wrapper {
   position: relative;
   transform-style: preserve-3d;
   transition: 0.5s ease-in-out;
 }
 
-.PostCard-wrapper--rotate {
+.PostCard-content-wrapper--rotate {
   transform: rotateY(180deg);
 }
 
-.PostCard {
+.PostCard-content {
   position: absolute;
-  border-radius: 5px;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
-  box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.35);
   backface-visibility: hidden;
   --webkit-backface-visibility: hidden;
   background: #fff;
 }
 
-.PostCard-back {
+.PostCard-content-back {
   transform: rotateY(180deg);
 }
