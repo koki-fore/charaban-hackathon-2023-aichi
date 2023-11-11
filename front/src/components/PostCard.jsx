@@ -1,6 +1,6 @@
 import '../styles/PostCard.css'
 import { PostCardHeader, PostCardContent, PostCardFooter } from './card'
-import { Box } from '@mui/material'
+import { Box, Stack } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 
 /**
@@ -38,7 +38,8 @@ const duymmyPost = {
   user_FK: 1,
   before_picture_path: 'https://picsum.photos/200/300',
   after_picture_path: 'https://picsum.photos/400/300',
-  after_text: 'after_text',
+  after_text:
+    '6イニング3自責点は ERA (Earned Run Average＝防御率) にすると 4.5 となり、あまり良いとは言えないように見えるが、2010年シーズン以降の MLB 全体の防御率が 4.08 (2010)、3.94 (2011)、4.01 (2012) であることを見れば、現在でも妥当なラインだと思われる。',
   before_text: 'before_text',
   created_at: '2021-10-01 00:00:00',
   user: {
@@ -150,17 +151,18 @@ const PostCardChild = ({
     if (childRef.current) {
       setChildRef(childRef)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <>
-      <Box
+      <Stack
         className={className}
         sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2 }}
         data-post-id={post.id}
         ref={childRef}>
         <PostCardHeader user={post.user} datetime={post.created_at} />
-        <PostCardContent post={post} sx={{ mt: 2 }} />
+        <PostCardContent post={post} sx={{ mt: 2, flexGrow: 1 }} />
         <PostCardFooter
           sx={{ mt: 2 }}
           toggleRotate={toggleRotate}
@@ -168,7 +170,7 @@ const PostCardChild = ({
           isLiked={isLiked}
           numLiked={numLiked}
         />
-      </Box>
+      </Stack>
     </>
   )
 }
