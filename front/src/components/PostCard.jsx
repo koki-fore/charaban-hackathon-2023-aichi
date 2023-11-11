@@ -17,6 +17,7 @@ import { Box } from '@mui/material'
  * @property {string} after_picture_path
  * @property {string} after_text
  * @property {string} before_text
+ * @property {string} created_at
  * @property {User} user
  */
 
@@ -28,6 +29,7 @@ const duymmyPost = {
   after_picture_path: 'https://picsum.photos/200/300',
   after_text: 'after_text',
   before_text: 'before_text',
+  created_at: '2021-10-01 00:00:00',
   user: {
     id: 1,
     screen_name: 'screen_name',
