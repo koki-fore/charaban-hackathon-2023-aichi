@@ -2,7 +2,7 @@ version: '3.7'
 services:
   zengo:
     container_name: charaban-hackathon-2023-aichi
-    image: node:21-alpine3.17
+    image: node:20.9.0-alpine3.17
     tty: true
     volumes:
       - ./:/app
