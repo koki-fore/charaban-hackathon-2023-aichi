@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    container_name: db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: my_db
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    tty: true
+
+  api:
+    depends_on:
+      - db
+    container_name: fast_api
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/user/src/server
