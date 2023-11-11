@@ -32,17 +32,17 @@ const duymmyPost = {
   created_at: '2021-10-01 00:00:00',
   user: {
     id: 1,
-    screen_name: 'screen_name',
+    screen_name: 'ユーザー名',
     profile_picture_path: 'https://picsum.photos/200/300',
   },
 }
 
-export const PostCard = ({ /** @type {Post} */ post, sx }) => {
+export const PostCard = ({ /** @type {Post} */ post }) => {
   post = duymmyPost
   return (
     <>
-      <Box className="PostCard" sx={sx} data-post-id={post.id}>
-        <PostCardHeader />
+      <Box className="PostCard" sx={{ maxWidth: 600, mx: 'auto' }} data-post-id={post.id}>
+        <PostCardHeader user={post.user} datetime={post.created_at} />
         <PostCardContent />
         <PostCardFooter />
       </Box>
