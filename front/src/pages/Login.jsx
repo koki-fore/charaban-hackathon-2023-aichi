@@ -3,7 +3,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 
 const Login = () => {
   return (
-    <Container component="main" maxWidth="xs" sx={{ display: 'flex', alignItems: 'center' }}>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{ display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
       <Box
         sx={{
           display: 'flex',
