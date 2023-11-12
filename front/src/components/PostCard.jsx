@@ -49,7 +49,12 @@ const duymmyPost = {
   },
 }
 
-export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
+export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) => {
+  const childRef = useRef(null)
+  const [postRotate, setPostRotate] = useState(false)
+  const [frontChildRef, setFrontChildRef] = useState(null)
+  const [backChildRef, setBackChildRef] = useState(null)
+  const [contentHeight, setContentHeight] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [numLiked, setNumLiked] = useState(0)
   post = duymmyPost
@@ -64,29 +69,6 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
       setNumLiked((prev) => prev + 1)
     }
   }
-
-  return (
-    <>
-      <Box sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2 }} data-post-id={post.id}>
-        <PostCardChild post={post} handleLike={handleLike} isLiked={isLiked} numLiked={numLiked} />
-      </Box>
-    </>
-  )
-}
-
-const PostCardChild = ({
-  /** @type {Post} */ post,
-  className,
-  handleLike,
-  isLiked,
-  numLiked,
-  sx,
-}) => {
-  const childRef = useRef(null)
-  const [postRotate, setPostRotate] = useState(false)
-  const [frontChildRef, setFrontChildRef] = useState(null)
-  const [backChildRef, setBackChildRef] = useState(null)
-  const [contentHeight, setContentHeight] = useState(0)
 
   const toggleRotate = () => {
     setPostRotate(!postRotate)
@@ -125,60 +107,61 @@ const PostCardChild = ({
 
   return (
     <>
-      <Stack
-        className={className}
-        sx={{
-          ...sx,
-          maxWidth: 600,
-          mx: 'auto',
-          m: 2,
-          boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
-          borderRadius: '5px',
-          backgroundColor: 'grayText',
-        }}
-        data-post-id={post.id}
-        ref={childRef}>
-        <PostCardHeader
-          user={post.user}
-          datetime={post.created_at}
+      <Box sx={{ ...sx, maxWidth: 600, mx: 'auto' }} data-post-id={post.id}>
+        <Stack
+          className={className}
           sx={{
-            backgroundColor: '#fff',
-            p: 2,
-            pb: 1,
-            borderRadius: '5px 5px 0 0',
+            ...sx,
+            maxWidth: 600,
+            mx: 'auto',
+            boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+            borderRadius: '5px',
+            backgroundColor: 'grayText',
           }}
-        />
-        <Box
-          sx={{ height: contentHeight }}
-          className={`PostCard-content-wrapper ${
-            postRotate && 'PostCard-content-wrapper--rotate'
-          }`}>
-          <PostCardContent
-            post={beforePost}
-            sx={{ flexGrow: 1, py: 1 }}
-            className={'PostCard-content'}
-            setChildRef={setFrontChildRef}
+          data-post-id={post.id}
+          ref={childRef}>
+          <PostCardHeader
+            user={post.user}
+            datetime={post.created_at}
+            sx={{
+              backgroundColor: '#fff',
+              p: 2,
+              pb: 1,
+              borderRadius: '5px 5px 0 0',
+            }}
           />
-          <PostCardContent
-            post={afterPost}
-            sx={{ flexGrow: 1, py: 1 }}
-            className={'PostCard-content PostCard-content-back'}
-            setChildRef={setBackChildRef}
+          <Box
+            sx={{ height: contentHeight }}
+            className={`PostCard-content-wrapper ${
+              postRotate && 'PostCard-content-wrapper--rotate'
+            }`}>
+            <PostCardContent
+              post={beforePost}
+              sx={{ flexGrow: 1, py: 1 }}
+              className={'PostCard-content'}
+              setChildRef={setFrontChildRef}
+            />
+            <PostCardContent
+              post={afterPost}
+              sx={{ flexGrow: 1, py: 1 }}
+              className={'PostCard-content PostCard-content-back'}
+              setChildRef={setBackChildRef}
+            />
+          </Box>
+          <PostCardFooter
+            sx={{
+              backgroundColor: '#fff',
+              p: 2,
+              pt: 1,
+              borderRadius: '0 0 5px 5px',
+            }}
+            toggleRotate={toggleRotate}
+            handleLike={handleLike}
+            isLiked={isLiked}
+            numLiked={numLiked}
           />
-        </Box>
-        <PostCardFooter
-          sx={{
-            backgroundColor: '#fff',
-            p: 2,
-            pt: 1,
-            borderRadius: '0 0 5px 5px',
-          }}
-          toggleRotate={toggleRotate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          numLiked={numLiked}
-        />
-      </Stack>
+        </Stack>
+      </Box>
     </>
   )
 }
