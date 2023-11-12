@@ -1,5 +1,4 @@
-import Grid from '@mui/material/Unstable_Grid2'
-import { IconButton, Avatar, Box, Typography } from '@mui/material'
+import { IconButton, Avatar, Box, Typography, Grid } from '@mui/material'
 import dayjs from 'dayjs'
 
 /**
@@ -16,9 +15,9 @@ export const PostCardHeader = ({ /** @type {User} */ user, datetime, sx }) => {
   }
   return (
     <Box sx={sx}>
-      <Grid container justifyContent="space-between">
-        <Grid container alignItems="center" spacing={2}>
-          <Grid xs="auto">
+      <Grid container justifyContent="space-between" alignItems="center">
+        <Grid container item xs="auto" spacing={2} alignItems="center">
+          <Grid item>
             <IconButton onClick={handleNavigateToProfile} sx={{ p: 0 }}>
               <Avatar
                 alt={user.screen_name}
@@ -27,13 +26,13 @@ export const PostCardHeader = ({ /** @type {User} */ user, datetime, sx }) => {
               />
             </IconButton>
           </Grid>
-          <Grid>
+          <Grid item>
             <Typography className="post-card-header__user-name" variant="h6">
               {user.screen_name}
             </Typography>
           </Grid>
         </Grid>
-        <Grid container xs="auto" alignItems="center">
+        <Grid item>
           <Typography
             className="post-card-header__datetime"
             color="grayText"
