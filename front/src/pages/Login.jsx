@@ -1,7 +1,23 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import { useNavigate } from 'react-router-dom'
+import { auth } from '../firebase'
+import { useEffect } from 'react'
+import {onAuthStateChanged} from 'firebase/auth';
 
 const Login = () => {
+  const navigate = useNavigate('')
+  // ログイン状態かどうかを判定するイベントを発動する
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      //console.log('user = '+user.uid)
+      // ログインしている場合、ホームへリダイレクト
+      if (user) {
+        navigate('/')
+      }
+    })
+  }, [])
+
   return (
     <Container
       component="main"
