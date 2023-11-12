@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
+import Top from './pages/Top'
 
 const theme = createTheme({
   typography: {
@@ -30,8 +31,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <CssBaseline />
         <Routes>
+          <Route path="/" element={<Top />} />
           <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/Login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -14,7 +14,7 @@ import { Button } from '@mui/material'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
-const Header = () => {
+export const Header = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [isLogin, setIsLogin] = React.useState(false)
 
@@ -79,4 +79,3 @@ const Header = () => {
     </AppBar>
   )
 }
-export default Header
