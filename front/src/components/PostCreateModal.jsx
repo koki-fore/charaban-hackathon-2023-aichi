@@ -177,7 +177,7 @@ const ModalContentInput = ({ beforeOrAfter, register, imageUrl, setImageUrl, sx,
         />
         <Box
           sx={{
-            height: imageUrl && { xs: 200, sm: 400 },
+            height: imageUrl && { xs: 250, sm: 400 },
             width: { xs: '90%', sm: 500 },
             mx: 'auto',
             display: 'flex',
