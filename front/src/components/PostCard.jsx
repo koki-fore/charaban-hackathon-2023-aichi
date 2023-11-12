@@ -49,17 +49,46 @@ const duymmyPost = {
   },
 }
 
-export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
+export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) => {
+  const childRef = useRef(null)
   const [postRotate, setPostRotate] = useState(false)
-  const [isLiked, setIsLiked] = useState(false)
-  const [numLiked, setNumLiked] = useState(0)
   const [frontChildRef, setFrontChildRef] = useState(null)
   const [backChildRef, setBackChildRef] = useState(null)
-  const [cardHeight, setCardHeight] = useState(0)
+  const [contentHeight, setContentHeight] = useState(0)
+  const [isLiked, setIsLiked] = useState(false)
+  const [numLiked, setNumLiked] = useState(0)
   post = duymmyPost
+
+  const handleLike = () => {
+    console.log('like')
+    // TODO: APIを投げてresponseをセットする
+    if (isLiked) {
+      setIsLiked(false)
+    } else {
+      setIsLiked(true)
+      setNumLiked((prev) => prev + 1)
+    }
+  }
 
   const toggleRotate = () => {
     setPostRotate(!postRotate)
+  }
+
+  useEffect(() => {
+    if (!frontChildRef || !backChildRef) return
+    const height = Math.max(
+      0,
+      calcHeight(Array.from(frontChildRef?.current?.children)) + 32,
+      calcHeight(Array.from(backChildRef?.current?.children)) + 32,
+    )
+    setContentHeight(height)
+  }, [frontChildRef, backChildRef])
+
+  const calcHeight = (children) => {
+    const style = window.getComputedStyle(children[1])
+    const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom)
+    const height = children[1].offsetHeight + margin + (window.innerWidth < 600 ? 200 * 0.9 : 400)
+    return height
   }
 
   // 前後の投稿を分離する
@@ -76,101 +105,63 @@ export const PostCard = ({ /** @type {PostResponse} */ post, sx }) => {
     text: post.after_text,
   }
 
-  const handleLike = () => {
-    console.log('like')
-    // TODO: APIを投げてresponseをセットする
-    if (isLiked) {
-      setIsLiked(false)
-    } else {
-      setIsLiked(true)
-      setNumLiked((prev) => prev + 1)
-    }
-  }
-
-  const calcHeight = (children) => {
-    return children.reduce((acc, cur) => {
-      const style = window.getComputedStyle(cur)
-      const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom)
-      const height = cur.offsetHeight + margin
-      return acc + height
-    }, 0)
-  }
-
-  useEffect(() => {
-    if (!frontChildRef || !backChildRef) return
-    const height = Math.max(
-      0,
-      calcHeight(Array.from(frontChildRef?.current?.children)) + 32,
-      calcHeight(Array.from(backChildRef?.current?.children)) + 32,
-    )
-    setCardHeight(height)
-  }, [frontChildRef, backChildRef])
-
   return (
     <>
-      <Box
-        className={`PostCard-wrapper ${postRotate && 'PostCard-wrapper--rotate'}`}
-        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2, height: cardHeight }}
-        data-post-id={post.id}>
-        <PostCardChild
-          post={beforePost}
-          className={'PostCard PostCard-front'}
-          toggleRotate={toggleRotate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          numLiked={numLiked}
-          setChildRef={setFrontChildRef}
-        />
-        <PostCardChild
-          post={afterPost}
-          className={'PostCard PostCard-back'}
-          toggleRotate={toggleRotate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          numLiked={numLiked}
-          setChildRef={setBackChildRef}
-        />
+      <Box sx={{ ...sx, maxWidth: 600, mx: 'auto' }} data-post-id={post.id}>
+        <Stack
+          className={className}
+          sx={{
+            ...sx,
+            maxWidth: 600,
+            mx: { xs: 1, sm: 0 },
+            boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+            borderRadius: '5px',
+            backgroundColor: 'grayText',
+          }}
+          data-post-id={post.id}
+          ref={childRef}>
+          <PostCardHeader
+            user={post.user}
+            datetime={post.created_at}
+            sx={{
+              backgroundColor: '#fff',
+              p: 2,
+              pb: 1,
+              borderRadius: '5px 5px 0 0',
+            }}
+          />
+          <Box
+            sx={{ height: contentHeight }}
+            className={`PostCard-content-wrapper ${
+              postRotate && 'PostCard-content-wrapper--rotate'
+            }`}>
+            <PostCardContent
+              post={beforePost}
+              sx={{ flexGrow: 1, py: 1 }}
+              className={'PostCard-content'}
+              setChildRef={setFrontChildRef}
+            />
+            <PostCardContent
+              post={afterPost}
+              sx={{ flexGrow: 1, py: 1 }}
+              className={'PostCard-content PostCard-content-back'}
+              setChildRef={setBackChildRef}
+            />
+          </Box>
+          <PostCardFooter
+            sx={{
+              backgroundColor: '#fff',
+              p: 2,
+              pt: 1,
+              borderRadius: '0 0 5px 5px',
+            }}
+            toggleRotate={toggleRotate}
+            handleLike={handleLike}
+            isLiked={isLiked}
+            numLiked={numLiked}
+          />
+        </Stack>
       </Box>
-    </>
-  )
-}
-
-const PostCardChild = ({
-  /** @type {Post} */ post,
-  className,
-  toggleRotate,
-  handleLike,
-  isLiked,
-  numLiked,
-  setChildRef,
-  sx,
-}) => {
-  const childRef = useRef(null)
-
-  useEffect(() => {
-    if (childRef.current) {
-      setChildRef(childRef)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  return (
-    <>
-      <Stack
-        className={className}
-        sx={{ ...sx, maxWidth: 600, mx: 'auto', p: 2 }}
-        data-post-id={post.id}
-        ref={childRef}>
-        <PostCardHeader user={post.user} datetime={post.created_at} />
-        <PostCardContent post={post} sx={{ mt: 2, flexGrow: 1 }} />
-        <PostCardFooter
-          sx={{ mt: 2 }}
-          toggleRotate={toggleRotate}
-          handleLike={handleLike}
-          isLiked={isLiked}
-          numLiked={numLiked}
-        />
-      </Stack>
     </>
   )
 }

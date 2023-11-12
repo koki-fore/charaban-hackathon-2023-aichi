@@ -1,4 +1,5 @@
 import { Box, Typography, Stack } from '@mui/material'
+import { useEffect, useRef } from 'react'
 
 /**
  * @typedef {Object} Post
@@ -10,15 +11,31 @@ import { Box, Typography, Stack } from '@mui/material'
  * @property {User} user
  */
 
-export const PostCardContent = ({ /** @type {Post} */ post, sx }) => {
+export const PostCardContent = ({ /** @type {Post} */ post, sx, className, setChildRef }) => {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (ref.current) {
+      setChildRef(ref)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <>
-      <Stack sx={sx}>
-        <Stack alignItems="center" sx={{ height: 400, width: 500, mx: 'auto' }}>
+      <Stack sx={sx} className={className} ref={ref}>
+        <Stack
+          alignItems="center"
+          sx={{ height: { xs: 200, sm: 400 }, width: { xs: '90%', sm: 500 }, mx: 'auto' }}>
           <img
             src={post.picture_path}
             alt="image"
-            style={{ height: '100%', maxHeight: 400, maxWidth: 500, objectFit: 'contain' }}
+            style={{
+              height: '100%',
+              maxHeight: '100%',
+              maxWidth: '100%',
+              objectFit: 'contain',
+            }}
           />
         </Stack>
         <Box>
