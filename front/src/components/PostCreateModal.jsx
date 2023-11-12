@@ -6,10 +6,11 @@ import {
   Button,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material'
-import { MuiFileInput } from 'mui-file-input'
-import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useState, useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import imageCompression from 'browser-image-compression'
 
 const style = {
   position: 'absolute',
@@ -37,7 +38,9 @@ const selectedStyle = {
 
 export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   const [editState, setEditState] = useState('before')
-  const { register, control, handleSubmit } = useForm()
+  const [beforeImageUrl, setBeforeImageUrl] = useState('')
+  const [afterImageUrl, setAfterImageUrl] = useState('')
+  const { register, handleSubmit, reset } = useForm()
 
   const toggleEdit = (e) => {
     setEditState(e.target.value)
@@ -47,8 +50,15 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
     console.log(data)
   }
 
+  const handleClose = () => {
+    closeModal()
+    setBeforeImageUrl('')
+    setAfterImageUrl('')
+    reset()
+  }
+
   return (
-    <Modal open={open} onClose={closeModal} sx={sx} className={className}>
+    <Modal open={open} onClose={handleClose} sx={sx} className={className}>
       <Stack sx={{ ...style }}>
         <ToggleButtonGroup
           exclusive
@@ -63,25 +73,23 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
             AFTER
           </ToggleButton>
         </ToggleButtonGroup>
-        {editState === 'before' && (
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContentInput
             beforeOrAfter={'before'}
             register={register}
-            control={control}
-            sx={{ my: 2 }}
+            sx={{ my: 2, display: editState !== 'before' && 'none' }}
+            imageUrl={beforeImageUrl}
+            setImageUrl={setBeforeImageUrl}
           />
-        )}
-        {editState === 'after' && (
           <ModalContentInput
             beforeOrAfter={'after'}
             register={register}
-            control={control}
-            sx={{ my: 2 }}
+            sx={{ my: 2, display: editState !== 'after' && 'none' }}
+            imageUrl={afterImageUrl}
+            setImageUrl={setAfterImageUrl}
           />
-        )}
-        <form onSubmit={handleSubmit(onSubmit)}>
           <Box sx={{ textAlign: 'right' }}>
-            <Button type="Button" variant="outlined" onClick={closeModal}>
+            <Button type="button" variant="outlined" onClick={handleClose}>
               キャンセル
             </Button>
             <Button type="submit" variant="contained" sx={{ ml: 2 }}>
@@ -94,11 +102,33 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   )
 }
 // TODO: 画像のプレビュー機能
-const ModalContentInput = ({ beforeOrAfter, register, control, sx, className }) => {
+const ModalContentInput = ({ beforeOrAfter, register, imageUrl, setImageUrl, sx, className }) => {
+  const imageInput = useRef(null)
   const [image, setImage] = useState(null)
-  const handleChangeImage = (file) => {
-    setImage(file)
+  const handleChangeImage = async (e) => {
+    const file = e.target.files[0]
+    console.log('file', file)
+    const options = {
+      maxSizeMB: 1,
+      useWebWorker: true,
+    }
+    try {
+      const compressedFile = await imageCompression(file, options)
+      setImage(compressedFile)
+      const fileRader = new FileReader()
+      fileRader.onload = () => {
+        setImageUrl(fileRader.result)
+      }
+      fileRader.readAsDataURL(compressedFile)
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  const { ref, ...rest } = register(`${beforeOrAfter}_picture`, {
+    onChange: handleChangeImage,
+    required: true,
+  })
 
   return (
     <>
@@ -110,22 +140,61 @@ const ModalContentInput = ({ beforeOrAfter, register, control, sx, className }) 
           variant="outlined"
           rows={6}
           sx={{ width: '100%', maxHeight: '50vh' }}
-          {...register(`${beforeOrAfter}_text`)}
+          {...register(`${beforeOrAfter}_text`, { required: true })}
         />
-        <Controller
-          name={`${beforeOrAfter}_picture`}
-          control={control}
-          render={({ field, fieldState }) => (
-            <MuiFileInput
-              sx={{ mt: 2 }}
-              {...field}
-              onChange={handleChangeImage}
-              value={image}
-              helperText={fieldState.invalid ? 'File is invalid' : ''}
-              error={fieldState.invalid}
-            />
-          )}
+        {!imageUrl && (
+          <>
+            <Stack alignItems="center" sx={{ mt: 2 }}>
+              <img
+                src="/cloud-arrow-up-solid.svg"
+                width={100}
+                onClick={() => imageInput.current.click()}
+                style={{ cursor: 'pointer' }}
+              />
+              <Typography
+                variant="button"
+                color="grayText"
+                sx={{ cursor: 'pointer' }}
+                onClick={() => imageInput.current.click()}>
+                画像をアップロード
+              </Typography>
+            </Stack>
+          </>
+        )}
+        {imageUrl && (
+          <Button type="button" onClick={() => imageInput.current.click()}>
+            画像を変更
+          </Button>
+        )}
+        <input
+          type="file"
+          ref={(e) => {
+            ref(e)
+            imageInput.current = e
+          }}
+          {...rest}
+          style={{ display: 'none' }}
         />
+        <Box
+          sx={{
+            height: imageUrl && { xs: 200, sm: 400 },
+            width: { xs: '90%', sm: 500 },
+            mx: 'auto',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <img
+            src={imageUrl}
+            style={{
+              height: '100%',
+              maxHeight: '100%',
+              maxWidth: '100%',
+              objectFit: 'contain',
+              margin: 'auto',
+            }}
+          />
+        </Box>
       </Box>
     </>
   )
