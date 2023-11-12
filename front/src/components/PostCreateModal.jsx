@@ -95,6 +95,11 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
 }
 // TODO: 画像のプレビュー機能
 const ModalContentInput = ({ beforeOrAfter, register, control, sx, className }) => {
+  const [image, setImage] = useState(null)
+  const handleChangeImage = (file) => {
+    setImage(file)
+  }
+
   return (
     <>
       <Box sx={sx} className={className}>
@@ -114,6 +119,8 @@ const ModalContentInput = ({ beforeOrAfter, register, control, sx, className }) 
             <MuiFileInput
               sx={{ mt: 2 }}
               {...field}
+              onChange={handleChangeImage}
+              value={image}
               helperText={fieldState.invalid ? 'File is invalid' : ''}
               error={fieldState.invalid}
             />
