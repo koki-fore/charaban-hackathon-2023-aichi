@@ -32,7 +32,7 @@ const Header = () => {
   const logout = () => {
     console.log('logout')
     auth.signOut()
-    return navigate('/Login')
+    return navigate('/login')
   }
 
   return (
@@ -82,14 +82,14 @@ const Header = () => {
               <Button
                 variant="contained"
                 component={routerLink}
-                to="/SignUp"
+                to="/signup"
                 sx={{ borderRadius: 5, mr: 1, width: 100 }}>
                 新規登録
               </Button>
               <Button
                 variant="text"
                 component={routerLink}
-                to="/Login"
+                to="/login"
                 sx={{ borderRadius: 5, ml: 1, backgroundColor: 'white', width: 100 }}>
                 ログイン
               </Button>
