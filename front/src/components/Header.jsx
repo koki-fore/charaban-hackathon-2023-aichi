@@ -13,12 +13,13 @@ import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
+import { useAuthContext } from '../context/AuthContext'
 
 const Header = () => {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
 
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-  const [isLogin, setIsLogin] = React.useState(true)
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
@@ -41,7 +42,7 @@ const Header = () => {
           <img src={logo} alt="logo" />
 
           <Box sx={{ flexGrow: 1, display: 'flex' }}></Box>
-          {isLogin ? (
+          {user ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -78,7 +79,7 @@ const Header = () => {
             </Box>
           ) : (
             <Box sx={{ flexGrow: 0, display: 'flex' }}>
-              <Button variant="contained" sx={{ borderRadius: 5, mr: 1, width: 100 }}>
+              <Button variant="contained"  sx={{ borderRadius: 5, mr: 1, width: 100 }}>
                 新規登録
               </Button>
               <Button
