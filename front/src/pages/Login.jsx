@@ -95,7 +95,7 @@ const Login = () => {
               flexDirection: 'column',
               alignItems: 'center',
             }}>
-            <Link to='/SignUp' component={routerLink} >アカウントを作成する</Link>
+            <Link to='/signup' component={routerLink} >アカウントを作成する</Link>
           </Box>
           <Box
             mt={1}
@@ -104,7 +104,7 @@ const Login = () => {
               flexDirection: 'column',
               alignItems: 'center',
             }}>
-            <Link to='/PasswordReset' component={routerLink} >パスワードを忘れた場合</Link>
+            <Link to='/password-reset' component={routerLink} >パスワードを忘れた場合</Link>
           </Box>
         </Box>
       </Box>

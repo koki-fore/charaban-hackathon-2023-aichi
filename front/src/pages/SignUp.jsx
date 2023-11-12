@@ -161,7 +161,7 @@ const SignUp = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
               }}>
-              <Link to='/Login' component={routerLink} >ログインへ</Link>
+              <Link to='/login' component={routerLink} >ログインへ</Link>
             </Box>
           </form>
         </Box>
