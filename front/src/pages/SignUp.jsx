@@ -1,6 +1,6 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import { useNavigate } from 'react-router-dom'
+import { Link as routerLink, useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
 import {
   createUserWithEmailAndPassword,
@@ -161,7 +161,7 @@ const SignUp = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
               }}>
-              <Link>ログインへ</Link>
+              <Link to='/Login' component={routerLink} >ログインへ</Link>
             </Box>
           </form>
         </Box>

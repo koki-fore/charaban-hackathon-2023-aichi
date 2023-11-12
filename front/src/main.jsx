@@ -4,6 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 
@@ -27,13 +28,15 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <CssBaseline />
-        <Routes>
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <CssBaseline />
+          <Routes>
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/" element={<Login />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>,
 )
