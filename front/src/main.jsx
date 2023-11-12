@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
+import PrivateRoutes from './components/PrivateRoutes.jsx'
 
 const theme = createTheme({
   typography: {
@@ -32,8 +33,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <BrowserRouter>
           <CssBaseline />
           <Routes>
-            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/" element={<Login />} />
+            <Route element={<PrivateRoutes />}></Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
