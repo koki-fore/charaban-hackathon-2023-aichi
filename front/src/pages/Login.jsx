@@ -9,16 +9,6 @@ import googleSignInImage from '../assets/google/google_sign_in.png'
 
 const Login = () => {
   const navigate = useNavigate('')
-  // ログイン状態かどうかを判定するイベントを発動する
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      //console.log('user = '+user.uid)
-      // ログインしている場合、ホームへリダイレクト
-      if (user) {
-        navigate('/')
-      }
-    })
-  }, [])
 
   const googleLogin = () => {
     signInWithRedirect(auth, provider)
