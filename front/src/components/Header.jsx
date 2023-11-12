@@ -11,12 +11,14 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
-
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+import { useNavigate } from 'react-router-dom'
+import { auth } from '../firebase'
 
 const Header = () => {
+  const navigate = useNavigate()
+
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-  const [isLogin, setIsLogin] = React.useState(false)
+  const [isLogin, setIsLogin] = React.useState(true)
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
@@ -24,6 +26,12 @@ const Header = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  const logout = () => {
+    console.log('logout')
+    auth.signOut()
+    return navigate('/Login')
   }
 
   return (
@@ -55,11 +63,17 @@ const Header = () => {
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}>
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem key="Profile" onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">Profile</Typography>
+                </MenuItem>
+                <MenuItem
+                  key="Logout"
+                  onClick={() => {
+                    handleCloseUserMenu()
+                    logout()
+                  }}>
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           ) : (
