@@ -1,10 +1,14 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
-import { auth } from '../firebase'
-import { useEffect } from 'react'
-import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth'
+import { auth, provider } from '../firebase'
+import {
+  createUserWithEmailAndPassword,
+  signInWithRedirect,
+  GoogleAuthProvider,
+} from 'firebase/auth'
 import { useForm } from 'react-hook-form'
+import googleSignUpImage from '../assets/google/google_sign_up.png'
 
 const SignUp = () => {
   const navigate = useNavigate()
@@ -26,6 +30,35 @@ const SignUp = () => {
       })
       .catch((error) => {
         console.log(error)
+      })
+  }
+
+  const googleSignUp = () => {
+    signInWithRedirect(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access Google APIs.
+        const credential = GoogleAuthProvider.credentialFromResult(result)
+        const token = credential.accessToken
+
+        // The signed-in user info.
+        const user = result.user
+        // IdP data available using getAdditionalUserInfo(result)
+        console.log(token)
+        console.log(user)
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code
+        const errorMessage = error.message
+        // The email of the user's account used.
+        const email = error.customData.email
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error)
+
+        console.log(errorCode)
+        console.log(errorMessage)
+        console.log(email)
+        console.log(credential)
       })
   }
 
@@ -115,6 +148,12 @@ const SignUp = () => {
               sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
               新規登録
             </Button>
+            <Button
+              onClick={googleSignUp}
+              sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
+              style={{ padding: 0 }}>
+              <img src={googleSignUpImage} alt="sign up with google" />
+            </Button>
             <Box
               mt={1}
               sx={{
@@ -122,7 +161,7 @@ const SignUp = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
               }}>
-              <Link>ログインする</Link>
+              <Link>ログインへ</Link>
             </Box>
           </form>
         </Box>
