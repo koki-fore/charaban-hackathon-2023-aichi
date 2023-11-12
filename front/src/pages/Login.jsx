@@ -1,9 +1,10 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
-import { auth } from '../firebase'
+import { auth, provider } from '../firebase'
 import { useEffect } from 'react'
-import {onAuthStateChanged} from 'firebase/auth';
+import { onAuthStateChanged, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth'
+import googleSignInImage from '../assets/google/google_sign_in.png'
 
 const Login = () => {
   const navigate = useNavigate('')
@@ -17,6 +18,34 @@ const Login = () => {
       }
     })
   }, [])
+
+  const googleLogin = () => {
+    signInWithRedirect(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access Google APIs.
+        const credential = GoogleAuthProvider.credentialFromResult(result)
+        const token = credential.accessToken
+
+        // The signed-in user info.
+        const user = result.user
+        // IdP data available using getAdditionalUserInfo(result)
+        
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code
+        const errorMessage = error.message
+        // The email of the user's account used.
+        const email = error.customData.email
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error)
+
+        console.log(errorCode)
+        console.log(errorMessage)
+        console.log(email)
+        console.log(credential)
+      })
+  }
 
   return (
     <Container
@@ -61,6 +90,12 @@ const Login = () => {
             variant="contained"
             sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
             ログイン
+          </Button>
+          <Button
+            onClick={googleLogin}
+            sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
+            style={{ padding: 0 }}>
+            <img src={googleSignInImage} alt="sign in with google" />
           </Button>
           <Box
             mt={1}
