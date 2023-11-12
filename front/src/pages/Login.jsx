@@ -3,6 +3,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
 import { useEffect } from 'react'
+import {Link as routerLink} from 'react-router-dom'
 import { onAuthStateChanged, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth'
 import googleSignInImage from '../assets/google/google_sign_in.png'
 
@@ -104,7 +105,7 @@ const Login = () => {
               flexDirection: 'column',
               alignItems: 'center',
             }}>
-            <Link>アカウントを作成する</Link>
+            <Link to='/SignUp' component={routerLink} >アカウントを作成する</Link>
           </Box>
           <Box
             mt={1}
@@ -113,7 +114,7 @@ const Login = () => {
               flexDirection: 'column',
               alignItems: 'center',
             }}>
-            <Link>パスワードを忘れた場合</Link>
+            <Link to='/PasswordReset' component={routerLink} >パスワードを忘れた場合</Link>
           </Box>
         </Box>
       </Box>
