@@ -11,7 +11,7 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Link as routerLink, useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
 import { useAuthContext } from '../context/AuthContext'
 
@@ -79,11 +79,17 @@ const Header = () => {
             </Box>
           ) : (
             <Box sx={{ flexGrow: 0, display: 'flex' }}>
-              <Button variant="contained"  sx={{ borderRadius: 5, mr: 1, width: 100 }}>
+              <Button
+                variant="contained"
+                component={routerLink}
+                to="/SignUp"
+                sx={{ borderRadius: 5, mr: 1, width: 100 }}>
                 新規登録
               </Button>
               <Button
                 variant="text"
+                component={routerLink}
+                to="/Login"
                 sx={{ borderRadius: 5, ml: 1, backgroundColor: 'white', width: 100 }}>
                 ログイン
               </Button>
