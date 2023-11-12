@@ -14,7 +14,7 @@ import { Button } from '@mui/material'
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
-export const Header = () => {
+export const Header = ({ sx }) => {
   const [anchorElUser, setAnchorElUser] = React.useState(null)
   const [isLogin, setIsLogin] = React.useState(false)
 
@@ -27,7 +27,7 @@ export const Header = () => {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'bgSky' }}>
+    <AppBar position="static" sx={{ ...sx, backgroundColor: 'bgSky' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <img src={logo} alt="logo" />

@@ -6,7 +6,7 @@ const Top = () => {
 
   return (
     <>
-      <Header />
+      <Header sx={{ position: 'sticky', top: 0, zIndex: 999 }} />
       <button type="button" onClick={() => setOpen(true)}>
         debug
       </button>
