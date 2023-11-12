@@ -16,7 +16,6 @@ import { auth } from '../firebase'
 import { useAuthContext } from '../context/AuthContext'
 
 export const Header = ({ sx }) => {
-const Header = () => {
   const navigate = useNavigate()
   const { user } = useAuthContext()
 
