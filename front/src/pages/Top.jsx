@@ -1,4 +1,5 @@
 import { Header, PostCard, PostCreateModal } from '../components'
+import { Fab } from '@mui/material'
 import { useState } from 'react'
 
 const Top = () => {
@@ -7,14 +8,24 @@ const Top = () => {
   return (
     <>
       <Header sx={{ position: 'sticky', top: 0, zIndex: 999 }} />
-      <button type="button" onClick={() => setOpen(true)}>
-        debug
-      </button>
       <PostCard sx={{ my: 1 }} />
       <PostCard sx={{ my: 1 }} />
       <PostCard sx={{ my: 1 }} />
       <PostCard sx={{ my: 1 }} />
       <PostCreateModal open={open} closeModal={() => setOpen(false)} />
+      <Fab
+        color="primary"
+        size="small"
+        onClick={() => setOpen(true)}
+        sx={{
+          position: 'fixed',
+          left: { xs: '', sm: 'calc(50vw + 320px)' },
+          right: { xs: 10, sm: '' },
+          bottom: 20,
+          fontSize: 24,
+        }}>
+        +
+      </Fab>
     </>
   )
 }
