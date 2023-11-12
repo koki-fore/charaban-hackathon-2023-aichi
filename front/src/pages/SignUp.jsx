@@ -19,15 +19,16 @@ const SignUp = () => {
 
   const onSubmit = (event) => {
     console.log(event.email, event.password)
-    // createUserWithEmailAndPassword(auth, email, password)
-    //   .then((userCredential) => {
-    //     const user = userCredential.user
-    //     console.log(user)
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+    createUserWithEmailAndPassword(auth, event.email, event.password)
+      .then((userCredential) => {
+        const user = userCredential.user
+        console.log(user)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
+
   return (
     <Container
       component="main"
