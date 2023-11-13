@@ -1,30 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Box, TextField, Button, Container, Typography, InputLabel } from '@mui/material'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Box, TextField, Button, Container, Typography } from '@mui/material'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 
 const UpdateAccount = () => {
   const [newUserPhotoObjectURL, setNewUserPhotoObjectURL] = useState('')
-  const {register, handleSubmit, watch, reset, errors, getValues, setValue} = useForm({
+  const {register, handleSubmit, getValues, setValue} = useForm({
     username: '',
     email: '',
     photoURL: '',
     introduction: '',
   })
-
-  const theme = createTheme({
-    palette: {
-      my: {
-        main: '#FFF',
-        // light: will be calculated from palette.primary.main,
-        // dark: will be calculated from palette.primary.main,
-        // contrastText: will be calculated to contrast with palette.primary.main
-      },
-    },
-  });
 
   const dummy = {
     username: "hiro-creater",
