@@ -1,17 +1,18 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from sqlalchemy.sql import func
 from db_sync_session import Base
 
 class User(Base):
 	__tablename__ = "user"
 
 	id = Column(Integer, primary_key=True, index=True)
-	screen_name = Column(String(30), nullable=False)
-	description = Column(String(400), nullable=False)
-	profile_picture_path = Column(String(400), nullable=False)
-	created_at = Column(DateTime, default=datetime.now(), nullable=False)
-	updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)
+	firebase_id = Column(String(50), nullable=False)
+	screen_name = Column(String(50), nullable=False)
+	description = Column(String(500), nullable=False)
+	profile_picture_path = Column(String(500), nullable=False)
+	created_at = Column(DateTime, server_default=func.now(), nullable=False)
+	updated_at = Column(DateTime, server_default=func.now(), server_onupdate=func.now(), nullable=False)
 	is_deleted = Column(Boolean, default=False, nullable=False)
 
 	comments = relationship("Comment", backref="user")
@@ -28,11 +29,11 @@ class Comment(Base):
 	id = Column(Integer, primary_key=True, index=True)
 	user_fk = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 	post_fk = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
-	text = Column(String(400), nullable=False)
-	# screen_name = Column(String(30), nullable=False)
-	# profile_picture_path = Column(String(400), nullable=False)
-	created_at = Column(DateTime, default=datetime.now(), nullable=False)
-	updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)
+	text = Column(String(500), nullable=False)
+	screen_name = Column(String(50), default="furu", nullable=True)
+	profile_picture_path = Column(String(500), default="furu", nullable=True)
+	created_at = Column(DateTime, server_default=func.now(), nullable=False)
+	updated_at = Column(DateTime, server_default=func.now(), server_onupdate=func.now(), nullable=False)
 
 	class Config:
 		orm_mode = True
@@ -42,12 +43,12 @@ class Post(Base):
 
 	id = Column(Integer, primary_key=True, index=True)
 	user_fk = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-	before_picture_path = Column(String(400), nullable=False)
-	after_picture_path = Column(String(400), nullable=False)
-	before_text = Column(String(400), nullable=False)
-	after_text = Column(String(400), nullable=False)
-	created_at = Column(DateTime, default=datetime.now(), nullable=False)
-	updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)
+	before_picture_path = Column(String(500), nullable=False)
+	after_picture_path = Column(String(500), nullable=False)
+	before_text = Column(String(500), nullable=False)
+	after_text = Column(String(500), nullable=False)
+	created_at = Column(DateTime, server_default=func.now(), nullable=False)
+	updated_at = Column(DateTime, server_default=func.now(), server_onupdate=func.now(), nullable=False)
 	is_deleted = Column(Boolean, default=False, nullable=False)
 	
 	comments = relationship("Comment", backref="post")
@@ -62,8 +63,8 @@ class Like(Base):
 	id = Column(Integer, primary_key=True, index=True)
 	user_fk = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 	post_fk = Column(Integer, ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
-	created_at = Column(DateTime, default=datetime.now(), nullable=False)
-	updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)
+	created_at = Column(DateTime, server_default=func.now(), nullable=False)
+	updated_at = Column(DateTime, server_default=func.now(), server_onupdate=func.now(), nullable=False)
 
 	class Config:
 		orm_mode = True
@@ -74,8 +75,8 @@ class Follow(Base):
 	id = Column(Integer, primary_key=True, index=True)
 	from_user_fk = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 	to_user_fk = Column(Integer, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
-	created_at = Column(DateTime, default=datetime.now(), nullable=False)
-	updated_at = Column(DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)
+	created_at = Column(DateTime, server_default=func.now(), nullable=False)
+	updated_at = Column(DateTime, server_default=func.now(), server_onupdate=func.now(), nullable=False)
 
 	class Config:
 		orm_mode = True
