@@ -1,18 +1,32 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Container, Typography } from '@mui/material'
 
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
+
+/**
+ * @typedef {Object} Account
+ * @property {string} username
+ * @property {string} email
+ * @property {string} photoURL
+ * @property {string} introduction
+ */
 
 const UpdateAccount = () => {
-  const [newUserPhotoObjectURL, setNewUserPhotoObjectURL] = useState('')
+  /** @type { Account } */
   const {register, handleSubmit, getValues, setValue} = useForm({
     username: '',
     email: '',
     photoURL: '',
-    introduction: '',
+    introduction: ''
   })
+
+  const [userPhotoURL, setUserPhotoURL] = useState('')
+  const [newUserPhotoObjectURL, setNewUserPhotoObjectURL] = useState('')
+
+  const navigate = useNavigate()
 
   const dummy = {
     username: "hiro-creater",
@@ -24,14 +38,14 @@ const UpdateAccount = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // データを取得する処理（例：APIからデータを取得）
-        // const data = await fetchDataFromAPI()
+        /** @type { Account } */
         const data = dummy
-
+        
         setValue('username', data.username)
         setValue('email', data.email)
-        setValue('photoURL', data.photoURL)
         setValue('introduction', data.introduction)
+
+        setUserPhotoURL(data.photoURL)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -39,15 +53,15 @@ const UpdateAccount = () => {
     fetchData()
   }, [])
 
-  const submit = async (data) => {
-    console.log('Updating account information:', data) 
+  const submit = async (value) => {
+    console.log('Updating account information:', value) 
   }
 
 
   return (
     <Container component="main" maxWidth="sm" sx={{marginTop: 5}} >
       <form onSubmit={handleSubmit(submit)}>
-        { getValues("photoURL") === '' ?
+        { userPhotoURL === '' ?
           <Box>
             <label htmlFor='newUserPhoto'>
               <AddPhotoAlternateIcon sx={{width:200, height:200}} />
@@ -57,6 +71,7 @@ const UpdateAccount = () => {
               type="file" 
               id="newUserPhoto"
               accept="image/*"
+              // TODO: アップロードされた写真データを保存、表示するためにはどうすればいいか、考えること
               onChange={setNewUserPhotoObjectURL}
             />
             <Typography variant='body1'>↑プロフィール写真を登録</Typography>
@@ -66,7 +81,7 @@ const UpdateAccount = () => {
             <Box
               component='img'
               id='photoURL'
-              src={ newUserPhotoObjectURL === '' ? getValues("photoURL") : newUserPhotoObjectURL}
+              src={userPhotoURL}
               alt="プロフィール画像"
               sx={{width: '50%'}}  
             />
@@ -80,11 +95,11 @@ const UpdateAccount = () => {
               type="file" 
               id="updateUserPhoto"
               accept="image/*"
+              // TODO: 更新された写真データを保存、表示するためにはどうすればいいか、考えること
               onChange={setNewUserPhotoObjectURL}
             />
           </Box>
         }
-
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
           {...register("username", {
@@ -130,8 +145,18 @@ const UpdateAccount = () => {
           type="submit"
           fullWidth
           variant="contained"
+          sx={{backgroundColor:'#F0F', borderRadius:5, marginY:2}}
+          // TODO: パスに関してはあとで聞くこと
+          onClick={() => {navigate("/change_password")}}
+        >
+          パスワード変更
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
           color="primary"
-          sx={{borderRadius:5, marginY:5}}
+          sx={{borderRadius:5, marginY:8}}
         >
           セーブ
         </Button>
