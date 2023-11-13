@@ -90,7 +90,13 @@ export const Header = ({ sx }) => {
                 variant="text"
                 component={routerLink}
                 to="/login"
-                sx={{ borderRadius: 5, ml: 1, backgroundColor: 'white', width: 100 }}>
+                sx={{
+                  borderRadius: 5,
+                  ml: 1,
+                  backgroundColor: 'white',
+                  width: 100,
+                  '&:hover': { backgroundColor: '#d1d1d1' },
+                }}>
                 ログイン
               </Button>
             </Box>
