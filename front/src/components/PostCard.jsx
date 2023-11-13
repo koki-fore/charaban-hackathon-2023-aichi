@@ -87,7 +87,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
   const calcHeight = (children) => {
     const style = window.getComputedStyle(children[1])
     const margin = parseFloat(style.marginTop) + parseFloat(style.marginBottom)
-    const height = children[1].offsetHeight + margin + (window.innerWidth < 600 ? 200 * 0.9 : 400)
+    const height = children[1].offsetHeight + margin + (window.innerWidth < 600 ? 250 * 0.9 : 400)
     return height
   }
 

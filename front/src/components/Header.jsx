@@ -15,7 +15,7 @@ import { Link as routerLink, useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
 import { useAuthContext } from '../context/AuthContext'
 
-const Header = () => {
+export const Header = ({ sx }) => {
   const navigate = useNavigate()
   const { user } = useAuthContext()
 
@@ -36,7 +36,7 @@ const Header = () => {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'bgSky' }}>
+    <AppBar position="static" sx={{ ...sx, backgroundColor: 'bgSky' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <img src={logo} alt="logo" />
@@ -100,4 +100,3 @@ const Header = () => {
     </AppBar>
   )
 }
-export default Header
