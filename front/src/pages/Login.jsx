@@ -2,13 +2,43 @@ import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
-import { useEffect } from 'react'
-import {Link as routerLink} from 'react-router-dom'
-import { onAuthStateChanged, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth'
+import { Link as routerLink } from 'react-router-dom'
+import { useState } from 'react'
+import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth'
 import googleSignInImage from '../assets/google/google_sign_in.png'
+import { useForm } from 'react-hook-form'
+import CloseIcon from '@mui/icons-material/Close'
+import IconButton from '@mui/material/IconButton'
+import Collapse from '@mui/material/Collapse'
+import Alert from '@mui/material/Alert'
 
 const Login = () => {
   const navigate = useNavigate('')
+
+  const [showAlert, setShowAlert] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+
+  const onSubmit = (event) => {
+    console.log(event.email, event.password)
+    signInWithEmailAndPassword(auth, event.email, event.password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user
+        navigate('/')
+      })
+      .catch((error) => {
+        const errorCode = error.code
+        const errorMessage = error.message
+        console.log(errorCode)
+        console.log(errorMessage)
+        setShowAlert(true)
+      })
+  }
 
   const googleLogin = () => {
     signInWithRedirect(auth, provider)
@@ -20,7 +50,7 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
-        
+        navigate('/')
       })
       .catch((error) => {
         // Handle Errors here.
@@ -30,6 +60,7 @@ const Login = () => {
         const email = error.customData.email
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error)
+        setShowAlert(true)
 
         console.log(errorCode)
         console.log(errorMessage)
@@ -53,59 +84,94 @@ const Login = () => {
           <LockOutlinedIcon />
         </Avatar>
         <Box mt={1}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="メールアドレス"
-            type="email"
-            autoComplete="email"
-            autoFocus
-            InputProps={{
-              sx: { borderRadius: 7 },
-            }}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="password"
-            label="パスワード"
-            type="password"
-            InputProps={{
-              sx: { borderRadius: 7 },
-            }}
-          />
-          <Button
-            variant="contained"
-            sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
-            ログイン
-          </Button>
-          <Button
-            onClick={googleLogin}
-            sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
-            style={{ padding: 0 }}>
-            <img src={googleSignInImage} alt="sign in with google" />
-          </Button>
-          <Box
-            mt={1}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <Link to='/signup' component={routerLink} >アカウントを作成する</Link>
-          </Box>
-          <Box
-            mt={1}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}>
-            <Link to='/password-reset' component={routerLink} >パスワードを忘れた場合</Link>
-          </Box>
+          <form noValidate onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              margin="normal"
+              required
+              {...register('email', { required: true })}
+              fullWidth
+              id="email"
+              label="メールアドレス"
+              type="email"
+              autoComplete="email"
+              autoFocus
+              helperText={errors.email && '必須です'}
+              error={errors.email && true}
+              InputProps={{
+                sx: { borderRadius: 7 },
+              }}
+            />
+            <TextField
+              margin="normal"
+              required
+              {...register('password', { required: '必須です' })}
+              fullWidth
+              id="password"
+              label="パスワード"
+              type="password"
+              helperText={errors.password && errors.password.message}
+              error={errors.password && true}
+              InputProps={{
+                sx: { borderRadius: 7 },
+              }}
+            />
+            {showAlert && (
+              <Box sx={{ width: '100%' }}>
+                <Collapse in={showAlert}>
+                  <Alert
+                    severity='error'
+                    action={
+                      <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                          setShowAlert(false)
+                        }}>
+                        <CloseIcon fontSize="inherit" />
+                      </IconButton>
+                    }
+                    sx={{ mb: 2 }}>
+                    メールアドレスかパスワードに誤りがあります
+                  </Alert>
+                </Collapse>
+              </Box>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
+              ログイン
+            </Button>
+            <Button
+              onClick={googleLogin}
+              sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
+              style={{ padding: 0 }}>
+              <img src={googleSignInImage} alt="sign in with google" />
+            </Button>
+            <Box
+              mt={1}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <Link to="/signup" component={routerLink}>
+                アカウントを作成する
+              </Link>
+            </Box>
+            <Box
+              mt={1}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}>
+              <Link to="/password-reset" component={routerLink}>
+                パスワードを忘れた場合
+              </Link>
+            </Box>
+          </form>
         </Box>
       </Box>
     </Container>

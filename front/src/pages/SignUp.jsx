@@ -100,8 +100,8 @@ const SignUp = () => {
               {...register('password', {
                 required: '必須です',
                 onBlur: () => {
-                  if (getValues('emailConfirm')) {
-                    trigger('emailConfirm')
+                  if (getValues('passwordConfirm')) {
+                    trigger('passwordConfirm')
                   }
                 },
                 minLength: {
