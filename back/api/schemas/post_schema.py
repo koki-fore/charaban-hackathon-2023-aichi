@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from .user_schema import User
 from .comment_schema import CommentWithUser
+from typing import List
 
 class PostCreate(BaseModel):
 	user_fk: int
@@ -18,10 +19,10 @@ class Post(PostCreate):
 	created_at: datetime
 	updated_at: datetime
 	is_deleted: bool
+	user: User
 
 class PostWithUser(Post):
-	user: User
+	pass
 
 class PostWithComment(Post):
-	comment_with_user: CommentWithUser
-	user: User
+	comments: List[CommentWithUser]

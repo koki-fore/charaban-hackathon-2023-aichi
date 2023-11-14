@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from .user_schema import User
+from typing import List
 
 class CommentCreate(BaseModel):
 	user_fk: int
@@ -19,3 +20,4 @@ class Comment(CommentCreate):
 
 class CommentWithUser(Comment):
 	user: User
+ 
