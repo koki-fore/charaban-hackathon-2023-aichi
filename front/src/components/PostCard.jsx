@@ -141,6 +141,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
             handleLike={handleLike}
             isLiked={isLiked}
             numLiked={numLiked}
+            postId={post.id}
           />
         </Stack>
       </Box>
