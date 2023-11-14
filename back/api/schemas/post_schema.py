@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from .user_schema import User
-from .comment_schema import Comment
+from .comment_schema import CommentWithUser
 
 class PostCreate(BaseModel):
 	user_fk: int
@@ -23,4 +23,5 @@ class PostWithUser(Post):
 	user: User
 
 class PostWithComment(Post):
-	comment: Comment
+	comment_with_usr: CommentWithUser
+	user: User
