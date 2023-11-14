@@ -23,7 +23,9 @@ const UpdateAccount = () => {
     introduction: ''
   })
 
+  // ユーザーのプロフィール写真のURLを入れる状態変数
   const [userPhotoURL, setUserPhotoURL] = useState('')
+  // 新しくアップロードされた写真のオブジェクトURLを入れる状態変数  
   const [newUserPhotoObjectURL, setNewUserPhotoObjectURL] = useState('')
 
   const navigate = useNavigate()
@@ -31,6 +33,7 @@ const UpdateAccount = () => {
   const dummy = {
     username: "hiro-creater",
     email: 'h-sasaki@safie.jp',
+    // photoURL: '',
     photoURL: "https://www.trans.co.jp/column/knowledge/ai_image_generator/img/ai_image_generator_01.jpg",
     introduction: "こんにちは、よろしくおねがいします。"
   }
@@ -54,7 +57,24 @@ const UpdateAccount = () => {
   }, [])
 
   const submit = async (value) => {
-    console.log('Updating account information:', value) 
+    // TODO: 写真はどのように保存されるのかを話し合うこと
+  }
+
+  const handleUploadingFile = (picture) => {
+    try {
+      if (!picture.target.files || picture.target.files.length === 0) {
+        throw new Error("You must select an image to upload.")
+      }
+      // 写真のデータそのものを取り出す。
+      const file = picture.target.files[0]
+      setNewUserPhotoObjectURL(URL.createObjectURL(file))
+      setUserPhotoURL(file.name)
+    } catch (error) {
+      console.log("Error uploading your profile image")
+      console.log(error.error_description || error.message)
+      // TODO: ユーザーは、エラーが発生したときに、運営側に問い合わせるのか？
+      alert("プロフィール写真のアップロードに失敗しました。")
+    }
   }
 
 
@@ -72,7 +92,7 @@ const UpdateAccount = () => {
               id="newUserPhoto"
               accept="image/*"
               // TODO: アップロードされた写真データを保存、表示するためにはどうすればいいか、考えること
-              onChange={setNewUserPhotoObjectURL}
+              onChange={handleUploadingFile}
             />
             <Typography variant='body1'>↑プロフィール写真を登録</Typography>
           </Box>
@@ -81,8 +101,9 @@ const UpdateAccount = () => {
             <Box
               component='img'
               id='photoURL'
-              src={userPhotoURL}
+              src={newUserPhotoObjectURL === '' ? userPhotoURL : newUserPhotoObjectURL}
               alt="プロフィール画像"
+              // TODO: プロフィール写真のサイズは予め決められているのか？
               sx={{width: '50%'}}  
             />
             <label htmlFor='updateUserPhoto'>
@@ -96,7 +117,7 @@ const UpdateAccount = () => {
               id="updateUserPhoto"
               accept="image/*"
               // TODO: 更新された写真データを保存、表示するためにはどうすればいいか、考えること
-              onChange={setNewUserPhotoObjectURL}
+              onChange={handleUploadingFile}
             />
           </Box>
         }
