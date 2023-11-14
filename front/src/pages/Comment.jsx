@@ -1,7 +1,8 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Header, PostCard, CommentCard } from '../components'
 import { useEffect, useState } from 'react'
-import { Box, Divider } from '@mui/material'
+import { Box, Divider, IconButton } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 /**
  * @typedef {Object} User
@@ -92,6 +93,7 @@ const dummyComments = [
 const Comment = () => {
   const { postId } = useParams()
   const [post, setPost] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     // TODO: postIdを使ってコメントを取得する
@@ -100,27 +102,31 @@ const Comment = () => {
 
   return (
     <>
-      <Header />
-      <PostCard post={duymmyPost} sx={{ my: 1 }} />
-      <Box
-        sx={{
-          boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
-          maxWidth: 600,
-          mx: { xs: 1, sm: 'auto' },
-          my: 1,
-          borderRadius: 5,
-        }}>
-        {dummyComments.map((comment, idx) => {
-          let sx = {}
-          if (idx === 0) sx['borderRadius'] = '5px 5px 0 0'
-          if (idx === dummyComments.length - 1) sx['borderRadius'] = '0 0 5px 5px'
-          return (
-            <Box key={comment.id}>
-              <CommentCard comment={comment} sx={sx} />
-              {idx !== dummyComments.length - 1 && <Divider />}
-            </Box>
-          )
-        })}
+      <Header sx={{ position: 'sticky', top: 0, zIndex: 998 }} />
+      <Box sx={{ maxWidth: 600, mx: 'auto' }}>
+        <IconButton sx={{ mt: 1, ml: 1 }} onClick={() => navigate('/')}>
+          <ArrowBackIcon />
+        </IconButton>
+        <PostCard post={duymmyPost} sx={{ my: 1 }} />
+        <Box
+          sx={{
+            boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+            mx: { xs: 1, sm: 'auto' },
+            my: 1,
+            borderRadius: 5,
+          }}>
+          {dummyComments.map((comment, idx) => {
+            let sx = {}
+            if (idx === 0) sx['borderRadius'] = '5px 5px 0 0'
+            if (idx === dummyComments.length - 1) sx['borderRadius'] = '0 0 5px 5px'
+            return (
+              <Box key={comment.id}>
+                <CommentCard comment={comment} sx={sx} />
+                {idx !== dummyComments.length - 1 && <Divider />}
+              </Box>
+            )
+          })}
+        </Box>
       </Box>
     </>
   )
