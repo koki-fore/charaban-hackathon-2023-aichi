@@ -11,12 +11,15 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
+import { Link as routerLink, useNavigate } from 'react-router-dom'
+import { auth } from '../firebase'
+import { useAuthContext } from '../context/AuthContext'
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+export const Header = ({ sx }) => {
+  const navigate = useNavigate()
+  const { user } = useAuthContext()
 
-const Header = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null)
-  const [isLogin, setIsLogin] = React.useState(false)
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget)
@@ -26,14 +29,20 @@ const Header = () => {
     setAnchorElUser(null)
   }
 
+  const logout = () => {
+    console.log('logout')
+    auth.signOut()
+    return navigate('/login')
+  }
+
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'bgSky' }}>
+    <AppBar position="static" sx={{ ...sx, backgroundColor: 'bgSky' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <img src={logo} alt="logo" />
 
           <Box sx={{ flexGrow: 1, display: 'flex' }}></Box>
-          {isLogin ? (
+          {user ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -55,21 +64,39 @@ const Header = () => {
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}>
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem key="Profile" onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">Profile</Typography>
+                </MenuItem>
+                <MenuItem
+                  key="Logout"
+                  onClick={() => {
+                    handleCloseUserMenu()
+                    logout()
+                  }}>
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           ) : (
             <Box sx={{ flexGrow: 0, display: 'flex' }}>
-              <Button variant="contained" sx={{ borderRadius: 5, mr: 1, width: 100 }}>
+              <Button
+                variant="contained"
+                component={routerLink}
+                to="/signup"
+                sx={{ borderRadius: 5, mr: 1, width: 100 }}>
                 新規登録
               </Button>
               <Button
                 variant="text"
-                sx={{ borderRadius: 5, ml: 1, backgroundColor: 'white', width: 100 }}>
+                component={routerLink}
+                to="/login"
+                sx={{
+                  borderRadius: 5,
+                  ml: 1,
+                  backgroundColor: 'white',
+                  width: 100,
+                  '&:hover': { backgroundColor: '#d1d1d1' },
+                }}>
                 ログイン
               </Button>
             </Box>
@@ -79,4 +106,3 @@ const Header = () => {
     </AppBar>
   )
 }
-export default Header
