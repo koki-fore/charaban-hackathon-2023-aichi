@@ -23,5 +23,5 @@ class PostWithUser(Post):
 	user: User
 
 class PostWithComment(Post):
-	comment_with_usr: CommentWithUser
+	comment_with_user: CommentWithUser
 	user: User
