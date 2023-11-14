@@ -140,7 +140,7 @@ const ModalContentInput = ({ beforeOrAfter, register, imageUrl, setImageUrl, sx,
           variant="outlined"
           rows={6}
           sx={{ width: '100%', maxHeight: '50vh' }}
-          {...register(`${beforeOrAfter}_text`, { required: true })}
+          {...register(`${beforeOrAfter}_text`)}
         />
         {!imageUrl && (
           <>
