@@ -24,7 +24,6 @@ const Login = () => {
   } = useForm()
 
   const onSubmit = (event) => {
-    console.log(event.email, event.password)
     signInWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
         // Signed in
