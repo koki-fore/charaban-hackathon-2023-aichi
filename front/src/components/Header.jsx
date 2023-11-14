@@ -30,9 +30,8 @@ export const Header = ({ sx }) => {
   }
 
   const logout = () => {
-    console.log('logout')
     auth.signOut()
-    return navigate('/login')
+    return navigate('/')
   }
 
   return (
