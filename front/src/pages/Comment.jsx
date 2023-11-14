@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { Header, PostCard, CommentCard } from '../components'
 import { useEffect, useState } from 'react'
+import { Box, Divider } from '@mui/material'
 
 /**
  * @typedef {Object} User
@@ -17,6 +18,16 @@ import { useEffect, useState } from 'react'
  * @property {string} after_picture_path
  * @property {string} after_text
  * @property {string} before_text
+ * @property {string} created_at
+ * @property {User} user
+ */
+
+/**
+ * @typedef {Object} Comment
+ * @property {number} id
+ * @property {number} user_FK
+ * @property {number} post_FK
+ * @property {string} text
  * @property {string} created_at
  * @property {User} user
  */
@@ -38,12 +49,51 @@ const duymmyPost = {
   },
 }
 
+/** @type { Comment[] } */
+const dummyComments = [
+  {
+    id: 1,
+    user_FK: 1,
+    post_FK: 1,
+    text: 'コメント',
+    created_at: '2021-10-01 00:00:00',
+    user: {
+      id: 1,
+      screen_name: 'ユーザー名1',
+      profile_picture_path: 'https://picsum.photos/200/300',
+    },
+  },
+  {
+    id: 2,
+    user_FK: 1,
+    post_FK: 1,
+    text: 'コメント2',
+    created_at: '2021-10-01 00:00:00',
+    user: {
+      id: 1,
+      screen_name: 'ユーザー名2',
+      profile_picture_path: 'https://picsum.photos/300/300',
+    },
+  },
+  {
+    id: 3,
+    user_FK: 1,
+    post_FK: 1,
+    text: 'コメント3',
+    created_at: '2021-10-01 00:00:00',
+    user: {
+      id: 1,
+      screen_name: 'ユーザー名3',
+      profile_picture_path: 'https://picsum.photos/200/400',
+    },
+  },
+]
+
 const Comment = () => {
   const { postId } = useParams()
   const [post, setPost] = useState(null)
 
   useEffect(() => {
-    console.log(postId)
     // TODO: postIdを使ってコメントを取得する
     setPost(duymmyPost)
   }, [postId])
@@ -51,7 +101,27 @@ const Comment = () => {
   return (
     <>
       <Header />
-      <PostCard post={post} sx={{ my: 1 }} />
+      <PostCard post={duymmyPost} sx={{ my: 1 }} />
+      <Box
+        sx={{
+          boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+          maxWidth: 600,
+          mx: { xs: 1, sm: 'auto' },
+          my: 1,
+          borderRadius: 5,
+        }}>
+        {dummyComments.map((comment, idx) => {
+          let sx = {}
+          if (idx === 0) sx['borderRadius'] = '5px 5px 0 0'
+          if (idx === dummyComments.length - 1) sx['borderRadius'] = '0 0 5px 5px'
+          return (
+            <Box key={comment.id}>
+              <CommentCard comment={comment} sx={sx} />
+              {idx !== dummyComments.length - 1 && <Divider />}
+            </Box>
+          )
+        })}
+      </Box>
     </>
   )
 }
