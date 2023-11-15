@@ -3,11 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import ResponseValidationError
 from fastapi.responses import JSONResponse
 from routers import posts
+import firebase_admin
 from starlette.requests import Request
 
 
 app = FastAPI()
 app.include_router(posts.router)
+
+firebase_admin.initialize_app()
 
 #@app.exception_handler(ResponseValidationError)
 #async def handler(request:Request, exc:ResponseValidationError):

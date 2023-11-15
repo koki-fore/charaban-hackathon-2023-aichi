@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+# from .auth import auth_user
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -58,3 +59,7 @@ def delete_post(
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
     return posts_cruds.delete_post(db, post_id)
+
+# @router.post("/test")
+# def test(uid: int = Depends(auth_user)):
+#     return uid
