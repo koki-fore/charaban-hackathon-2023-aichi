@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Container, Typography } from '@mui/material'
-import { database, storage } from '../firebase'
+import { storage } from '../firebase'
 import { useAuthContext } from '../context/AuthContext'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
@@ -34,14 +34,6 @@ const UpdateAccount = () => {
   const [newUserPhotoFile, setNewUserPhotoFile] = useState(null)
 
   const navigate = useNavigate()
-
-  const dummy = {
-    screen_name: "hiro-creater",
-    email: 'h-sasaki@safie.jp',
-    // profile_picture_path: '',
-    profile_picture_path: "https://www.trans.co.jp/column/knowledge/ai_image_generator/img/ai_image_generator_01.jpg",
-    description: "こんにちは、よろしくおねがいします。"
-  }
 
   useEffect(() => {
     const fetchData = async () => {
