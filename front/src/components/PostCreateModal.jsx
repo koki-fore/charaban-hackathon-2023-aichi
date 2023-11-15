@@ -70,7 +70,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
       getUploadBytes(afterPictureRef, afterImage, '.after'),
     ]).then(([beforeUrl, afterUrl]) => {
       console.log(beforeUrl, afterUrl)
-      
+      // TODO: axiosでPosts
     })
   }
 
