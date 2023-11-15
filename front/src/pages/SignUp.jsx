@@ -1,24 +1,19 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import { useNavigate } from 'react-router-dom'
+import { Link as routerLink, useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
-import { Link as routerLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import {
-  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
   onAuthStateChanged,
 } from 'firebase/auth'
-import googleSignInImage from '../assets/google/google_sign_in.png'
 import { useForm } from 'react-hook-form'
-import CloseIcon from '@mui/icons-material/Close'
-import IconButton from '@mui/material/IconButton'
-import Collapse from '@mui/material/Collapse'
-import Alert from '@mui/material/Alert'
+import googleSignUpImage from '../assets/google/google_sign_up.png'
+import { useEffect } from 'react'
 
-const Login = () => {
-  const navigate = useNavigate('')
+const SignUp = () => {
+  const navigate = useNavigate()
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -28,31 +23,27 @@ const Login = () => {
     })
   }, [])
 
-  const [showAlert, setShowAlert] = useState(false)
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
+    trigger,
   } = useForm()
 
   const onSubmit = (event) => {
-    signInWithEmailAndPassword(auth, event.email, event.password)
+    console.log(event.email, event.password)
+    createUserWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user
-        navigate('/')
+        console.log(user)
       })
       .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorCode)
-        console.log(errorMessage)
-        setShowAlert(true)
+        console.log(error)
       })
   }
 
-  const googleLogin = () => {
+  const googleSignUp = () => {
     signInWithRedirect(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access Google APIs.
@@ -62,12 +53,22 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
+        console.log(token)
+        console.log(user)
       })
       .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code
+        const errorMessage = error.message
+        // The email of the user's account used.
+        const email = error.customData.email
+        // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error)
-        setShowAlert(true)
 
-        console.error(error)
+        console.log(errorCode)
+        console.log(errorMessage)
+        console.log(email)
+        console.log(credential)
       })
   }
 
@@ -85,7 +86,7 @@ const Login = () => {
         <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
           <LockOutlinedIcon />
         </Avatar>
-        <Box mt={1}>
+        <Box>
           <form noValidate onSubmit={handleSubmit(onSubmit)}>
             <TextField
               margin="normal"
@@ -106,7 +107,22 @@ const Login = () => {
             <TextField
               margin="normal"
               required
-              {...register('password', { required: '必須です' })}
+              {...register('password', {
+                required: '必須です',
+                onBlur: () => {
+                  if (getValues('passwordConfirm')) {
+                    trigger('passwordConfirm')
+                  }
+                },
+                minLength: {
+                  value: 8,
+                  message: '8文字以上入力してください',
+                },
+                pattern: {
+                  value: /^(?=.*[a-zA-Z])(?=.*[1-9])[a-zA-Z0-9!-?./#%$+=_^(){};:'"<>~`@]/,
+                  message: 'アルファベットと数字をそれぞれ1つは含むようにしてください',
+                },
+              })}
               fullWidth
               id="password"
               label="パスワード"
@@ -117,39 +133,36 @@ const Login = () => {
                 sx: { borderRadius: 7 },
               }}
             />
-            {showAlert && (
-              <Box sx={{ width: '100%' }}>
-                <Collapse in={showAlert}>
-                  <Alert
-                    severity="error"
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setShowAlert(false)
-                        }}>
-                        <CloseIcon fontSize="inherit" />
-                      </IconButton>
-                    }
-                    sx={{ mb: 2 }}>
-                    メールアドレスかパスワードに誤りがあります
-                  </Alert>
-                </Collapse>
-              </Box>
-            )}
+            <TextField
+              margin="normal"
+              required
+              {...register('passwordConfirm', {
+                required: '必須です',
+                validate: (value) => {
+                  return value === getValues('password') || 'パスワードが一致しません'
+                },
+              })}
+              fullWidth
+              id="passwordConfirm"
+              label="パスワード（確認）"
+              type="password"
+              helperText={errors.passwordConfirm && errors.passwordConfirm.message}
+              error={errors.passwordConfirm && true}
+              InputProps={{
+                sx: { borderRadius: 7 },
+              }}
+            />
             <Button
               type="submit"
               variant="contained"
               sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
-              ログイン
+              新規登録
             </Button>
             <Button
-              onClick={googleLogin}
+              onClick={googleSignUp}
               sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
               style={{ padding: 0 }}>
-              <img src={googleSignInImage} alt="sign in with google" />
+              <img src={googleSignUpImage} alt="sign up with google" />
             </Button>
             <Box
               mt={1}
@@ -158,19 +171,8 @@ const Login = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
               }}>
-              <Link to="/signup" component={routerLink}>
-                アカウントを作成する
-              </Link>
-            </Box>
-            <Box
-              mt={1}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}>
-              <Link to="/password-reset" component={routerLink}>
-                パスワードを忘れた場合
+              <Link to="/login" component={routerLink}>
+                ログインへ
               </Link>
             </Box>
           </form>
@@ -179,4 +181,4 @@ const Login = () => {
     </Container>
   )
 }
-export default Login
+export default SignUp

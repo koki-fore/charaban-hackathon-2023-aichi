@@ -1,34 +1,32 @@
-import { Box, IconButton } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2'
+import { Box, IconButton, Grid } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, sx }) => {
-  const handleComment = () => {
-    console.log('comment')
-  }
+export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, postId, sx }) => {
+  const navigate = useNavigate()
 
   return (
     <>
       <Box sx={sx}>
-        <Grid container justifyContent="space-around">
-          <Grid xs="auto">
+        <Grid container justifyContent="space-around" alignItems="center">
+          <Grid item>
             <IconButton sx={{ p: 0 }}>
-              <Box sx={{ width: 30, height: 30 }}>
+              <Box sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}>
                 <img
                   src="/comment.svg"
                   alt="to comment"
-                  onClick={handleComment}
-                  width={30}
-                  height={30}
+                  onClick={() => navigate(`/comment/${postId}`)}
+                  width="100%"
+                  height="100%"
                 />
               </Box>
             </IconButton>
           </Grid>
-          <Grid xs="auto">
+          <Grid item>
             <IconButton sx={{ p: 0 }}>
               <Box
                 sx={{
-                  width: 30,
-                  height: 30,
+                  width: { xs: 20, sm: 30 },
+                  height: { xs: 20, sm: 30 },
                   '&::after': {
                     content: `'${numLiked || ''}'`,
                     position: 'absolute',
@@ -43,16 +41,16 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, sx
                   src={isLiked ? '/stared.svg' : '/star-outline.svg'}
                   alt="like"
                   onClick={() => handleLike()}
-                  width={30}
-                  height={30}
+                  width="100%"
+                  height="100%"
                 />
               </Box>
             </IconButton>
           </Grid>
-          <Grid xs="auto">
+          <Grid item>
             <IconButton sx={{ p: 0 }}>
-              <Box sx={{ width: 30, height: 30 }}>
-                <img src="/Z.png" alt="rotete" onClick={() => toggleRotate()} height={30} />
+              <Box sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}>
+                <img src="/Z.png" alt="rotete" onClick={() => toggleRotate()} height="100%" />
               </Box>
             </IconButton>
           </Grid>
