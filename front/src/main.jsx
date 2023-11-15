@@ -9,6 +9,7 @@ import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import Top from './pages/Top'
 import PrivateRoutes from './components/PrivateRoutes.jsx'
+import Comment from './pages/Comment'
 
 const theme = createTheme({
   typography: {
@@ -37,7 +38,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/" element={<Top />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route element={<PrivateRoutes />}></Route>
+            <Route element={<PrivateRoutes />}>
+              <Route path="/comment/:postId" element={<Comment />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
