@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Container, Typography } from '@mui/material'
 import { database, storage } from '../firebase'
+import { useAuthContext } from '../context/AuthContext'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
@@ -24,6 +25,8 @@ const UpdateAccount = () => {
     description: ''
   })
 
+  const { user } = useAuthContext()
+
   const [userData, setUserData] = useState([])
   // ユーザーのプロフィール写真のURLを入れる状態変数
   const [userPhotoURL, setUserPhotoURL] = useState('')
@@ -43,21 +46,22 @@ const UpdateAccount = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dataRef = database.ref('users');
-        dataRef.get('value')
-          .then((snapshot) => {
-            // snapshot.val() で実際のデータを取得
-            setUserData(snapshot.val())
-          })
-          .catch((error) => {
-            console.error('データの取得中にエラーが発生しました:', error);
-          });
+        console.log(user);
+        // const dataRef = database.ref('users');
+        // dataRef.get('value')
+        //   .then((snapshot) => {
+        //     // snapshot.val() で実際のデータを取得
+        //     setUserData(snapshot.val())
+        //   })
+        //   .catch((error) => {
+        //     console.error('データの取得中にエラーが発生しました:', error);
+        //   });
         
-        setValue('screen_name', userData.screen_name)
-        setValue('email', userData.email)
-        setValue('description', userData.description)
+        // setValue('screen_name', userData.screen_name)
+        // setValue('email', userData.email)
+        // setValue('description', userData.description)
 
-        setUserPhotoURL(userData.profile_picture_path)
+        // setUserPhotoURL(userData.profile_picture_path)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
