@@ -48,3 +48,13 @@ def update_post_is_delete(
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
     return posts_cruds.update_post_is_delete(db, post_body, original=post)
+
+@router.delete("/posts/{post_id}")
+def delete_post(
+    post_id: int,
+    db: Session = Depends(db_session)
+    ):
+    post = posts_cruds.get_post(db, post_id)
+    if post is None:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return posts_cruds.delete_post(db, post_id)

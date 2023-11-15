@@ -52,3 +52,12 @@ def update_post_is_delete(
     db.commit()
     db.refresh(original)
     return original
+
+def delete_post(
+    db: Session,
+    post_id: int
+    ) -> Post_model:
+    post = db.query(Post_model).filter(Post_model.id == post_id).first()
+    db.delete(post)
+    db.commit()
+    return
