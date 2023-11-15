@@ -42,13 +42,12 @@ def list_recommended_post():
 @router.put("/posts/{posts_id}/delete", response_model=posts_schemas.Post)
 def update_post_is_delete(
     post_id: int,
-    post_body: posts_schemas.PostCreate,
     db: Session = Depends(db_session)
     ):
     post = posts_cruds.get_post(db, post_id)
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-    return posts_cruds.update_post_is_delete(db, post_body, original=post)
+    return posts_cruds.update_post_is_delete(db, original=post)
 
 @router.delete("/posts/{post_id}")
 def delete_post(

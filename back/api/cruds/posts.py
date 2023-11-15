@@ -44,7 +44,6 @@ def get_recommended_posts():
 
 def update_post_is_delete(
     db: Session,
-    post_create: PostCreate_schema,
     original: Post_schema
     ) -> Post_model:
     original.is_deleted = True
