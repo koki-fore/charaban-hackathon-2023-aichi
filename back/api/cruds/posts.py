@@ -15,7 +15,7 @@ from schemas.post_schema import PostWithComment as PostWithComment_schema
 def create_post(
     db: Session,
     post_create: PostCreate_schema
-) -> Post_model:
+    ) -> Post_model:
     post = Post_model(**post_create.model_dump())
     db.add(post)
     db.commit()
@@ -24,19 +24,17 @@ def create_post(
 
 def get_all_posts(
     db: Session
-) -> List[Post_schema]:
+    ) -> List[Post_schema]:
     return db.query(Post_model).all()
 
 def get_post_with_comments(
-   # db: Session,
-   # post_id: int
-):
-    #print("="*50)
-    # post = db.query(Post_model, Comment_model).join(Post_model, Comment_model.post_fk == Post_model.id).filter(Post_model.id == post_id).first()
-    #post = db.query(Post_model).filter(Post_model.id == post_id).first()
-    #print(post)
-    #return post
-    pass
+    post_id: int,
+    db: Session
+    ) -> PostWithComment_schema:
+    return db.query(Post_model).filter(Post_model.id == post_id).first()
 
 def get_recommended_posts():
     pass
+
+def update_post_is_delete():
+    pass    

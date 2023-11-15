@@ -22,17 +22,16 @@ def create_post(
     return posts_cruds.create_post(db, post_body)
 
 @router.get("/posts/{post_id}/comments", response_model=posts_schemas.PostWithComment)
-def list_post_with_comments(
-    #post_id: int, 
-    #db: Session = Depends(db_session)
+def get_post(
+    post_id: int, 
+    db: Session = Depends(db_session)
     ):
-    #return posts_cruds.get_post_with_comments(db, post_id)
-    pass
+    return posts_cruds.get_post_with_comments(post_id, db)
 
 @router.get("/posts/recommended")
 def list_recommended_post():
     pass
 
 @router.put("/posts/{posts_id}/delete")
-def update_post_delete_at():
+def update_post_is_delete():
     pass
