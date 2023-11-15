@@ -3,8 +3,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
 import { Link as routerLink } from 'react-router-dom'
-import { useState } from 'react'
-import { signInWithEmailAndPassword, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth'
+import { useEffect, useState } from 'react'
+import {
+  signInWithEmailAndPassword,
+  signInWithRedirect,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+} from 'firebase/auth'
 import googleSignInImage from '../assets/google/google_sign_in.png'
 import { useForm } from 'react-hook-form'
 import CloseIcon from '@mui/icons-material/Close'
@@ -14,6 +19,14 @@ import Alert from '@mui/material/Alert'
 
 const Login = () => {
   const navigate = useNavigate('')
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        navigate('/')
+      }
+    })
+  }, [])
 
   const [showAlert, setShowAlert] = useState(false)
 
@@ -49,7 +62,6 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
-        navigate('/')
       })
       .catch((error) => {
         const credential = GoogleAuthProvider.credentialFromError(error)
@@ -109,7 +121,7 @@ const Login = () => {
               <Box sx={{ width: '100%' }}>
                 <Collapse in={showAlert}>
                   <Alert
-                    severity='error'
+                    severity="error"
                     action={
                       <IconButton
                         aria-label="close"
