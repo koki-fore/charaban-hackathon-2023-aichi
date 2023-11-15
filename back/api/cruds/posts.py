@@ -11,8 +11,6 @@ from schemas.post_schema import Post as Post_schema
 from schemas.post_schema import PostWithUser as PostWithUser_schema
 from schemas.post_schema import PostWithComment as PostWithComment_schema
 
-from schemas.comment_schema import Test
-
 
 def create_post(
     db: Session,
@@ -32,8 +30,11 @@ def get_all_posts(
 def get_post_with_comments(
     db: Session,
     post_id: int
-) -> Test:
-    post = db.query(Post_model, Comment_model).join(Post_model, Comment_model.post_fk == Post_model.id).filter(Post_model.id == post_id).first()
+):
+    print("="*50)
+    # post = db.query(Post_model, Comment_model).join(Post_model, Comment_model.post_fk == Post_model.id).filter(Post_model.id == post_id).first()
+    post = db.query(Post_model).filter(Post_model.id == post_id).first()
+    print(post)
     return post
     
 

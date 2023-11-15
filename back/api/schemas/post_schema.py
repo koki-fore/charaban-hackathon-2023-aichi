@@ -19,10 +19,10 @@ class Post(PostCreate):
 	created_at: datetime
 	updated_at: datetime
 	is_deleted: bool
-	user: User
+	user: User ## add by Furu
 
 class PostWithUser(Post):
 	pass
 
 class PostWithComment(Post):
-	comments: List[CommentWithUser]
+	comments: List[CommentWithUser] ## add by Furu
