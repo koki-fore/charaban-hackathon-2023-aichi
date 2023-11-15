@@ -65,6 +65,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
     // Child references can also take paths delimited by '/'
     const beforePictureRef = ref(storage, 'posts/' + beforeImage.name + '.before')
     const afterPictureRef = ref(storage, 'posts/' + afterImage.name + '.after')
+    // Promise.allを使って並行処理と同期処理を同時に行う
     Promise.all([
       getUploadBytes(beforePictureRef, beforeImage, '.before'),
       getUploadBytes(afterPictureRef, afterImage, '.after'),
