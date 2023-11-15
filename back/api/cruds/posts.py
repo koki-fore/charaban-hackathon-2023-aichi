@@ -13,8 +13,8 @@ from schemas.post_schema import PostWithComment as PostWithComment_schema
 
 
 def create_post(
-    post_create: PostCreate_schema,
-    db: Session
+    db: Session,
+    post_create: PostCreate_schema
     ) -> Post_model:
     post = Post_model(**post_create.model_dump())
     db.add(post)
@@ -27,9 +27,15 @@ def get_all_posts(
     ) -> List[Post_schema]:
     return db.query(Post_model).all()
 
+def get_post(
+    db: Session,
+    post_id: int
+    ) -> Post_schema:
+    return db.query(Post_model).filter(Post_model.id == post_id).first()
+
 def get_post_with_comments(
-    post_id: int,
-    db: Session
+    db: Session,
+    post_id: int
     ) -> PostWithComment_schema:
     return db.query(Post_model).filter(Post_model.id == post_id).first()
 
@@ -37,7 +43,12 @@ def get_recommended_posts():
     pass
 
 def update_post_is_delete(
-    
-    db: Session
-    ):
-    pass    
+    db: Session,
+    post_create: PostCreate_schema,
+    original: Post_schema
+    ) -> Post_model:
+    original.is_deleted = True
+    db.add(original)
+    db.commit()
+    db.refresh(original)
+    return original
