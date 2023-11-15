@@ -28,15 +28,15 @@ def get_all_posts(
     return db.query(Post_model).all()
 
 def get_post_with_comments(
-    db: Session,
-    post_id: int
+   # db: Session,
+   # post_id: int
 ):
-    print("="*50)
+    #print("="*50)
     # post = db.query(Post_model, Comment_model).join(Post_model, Comment_model.post_fk == Post_model.id).filter(Post_model.id == post_id).first()
-    post = db.query(Post_model).filter(Post_model.id == post_id).first()
-    print(post)
-    return post
-    
+    #post = db.query(Post_model).filter(Post_model.id == post_id).first()
+    #print(post)
+    #return post
+    pass
 
 def get_recommended_posts():
     pass
