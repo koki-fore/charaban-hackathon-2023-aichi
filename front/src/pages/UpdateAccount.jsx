@@ -2,53 +2,62 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Container, Typography } from '@mui/material'
+import { database, storage } from '../firebase'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
 
 /**
  * @typedef {Object} Account
- * @property {string} username
+ * @property {string} screen_name
  * @property {string} email
- * @property {string} photoURL
- * @property {string} introduction
+ * @property {string} profile_picture_path
+ * @property {string} description
  */
 
 const UpdateAccount = () => {
   /** @type { Account } */
   const {register, handleSubmit, getValues, setValue} = useForm({
-    username: '',
+    screen_name: '',
     email: '',
-    photoURL: '',
-    introduction: ''
+    profile_picture_path: '',
+    description: ''
   })
 
+  const [userData, setUserData] = useState([])
   // ユーザーのプロフィール写真のURLを入れる状態変数
   const [userPhotoURL, setUserPhotoURL] = useState('')
-  // 新しくアップロードされた写真のオブジェクトURLを入れる状態変数  
-  const [newUserPhotoObjectURL, setNewUserPhotoObjectURL] = useState('')
+  // 新しくアップロードされた写真のファイルを入れる状態変数  
+  const [newUserPhotoFile, setNewUserPhotoFile] = useState(null)
 
   const navigate = useNavigate()
 
   const dummy = {
-    username: "hiro-creater",
+    screen_name: "hiro-creater",
     email: 'h-sasaki@safie.jp',
-    // photoURL: '',
-    photoURL: "https://www.trans.co.jp/column/knowledge/ai_image_generator/img/ai_image_generator_01.jpg",
-    introduction: "こんにちは、よろしくおねがいします。"
+    // profile_picture_path: '',
+    profile_picture_path: "https://www.trans.co.jp/column/knowledge/ai_image_generator/img/ai_image_generator_01.jpg",
+    description: "こんにちは、よろしくおねがいします。"
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        /** @type { Account } */
-        const data = dummy
+        const dataRef = database.ref('users');
+        dataRef.get('value')
+          .then((snapshot) => {
+            // snapshot.val() で実際のデータを取得
+            setUserData(snapshot.val())
+          })
+          .catch((error) => {
+            console.error('データの取得中にエラーが発生しました:', error);
+          });
         
-        setValue('username', data.username)
-        setValue('email', data.email)
-        setValue('introduction', data.introduction)
+        setValue('screen_name', userData.screen_name)
+        setValue('email', userData.email)
+        setValue('description', userData.description)
 
-        setUserPhotoURL(data.photoURL)
+        setUserPhotoURL(userData.profile_picture_path)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -56,8 +65,39 @@ const UpdateAccount = () => {
     fetchData()
   }, [])
 
+  const sendPhoto2Firebase = () => {
+    const uploadTask = storage.put(newUserPhotoFile)
+    uploadTask.on('state_changed',
+      (snapShot) => {
+        console.log(snapShot)
+      },
+      (err) => {
+        console.log(err)
+      },
+      () => {
+        storage.ref('images').child(newUserPhotoFile.name).getDownloadURL()
+          .then((fireBaseUrl) => {
+            console.log(fireBaseUrl)
+            return fireBaseUrl
+          })
+      }
+    )
+  }
+
   const submit = async (value) => {
-    // TODO: 写真はどのように保存されるのかを話し合うこと
+    if (newUserPhotoFile !== null) setValue("profile_picture_path", sendPhoto2Firebase())
+    console.log(value);
+
+    // const dataRef = database.ref('yourDataPath');
+
+    // データを送信
+    // dataRef.set(data)
+    //   .then(() => {
+    //     console.log('データが正常に送信されました。');
+    //   })
+    //   .catch((error) => {
+    //     console.error('データの送信中にエラーが発生しました:', error);
+    //   });
   }
 
   const handleUploadingFile = (picture) => {
@@ -67,7 +107,7 @@ const UpdateAccount = () => {
       }
       // 写真のデータそのものを取り出す。
       const file = picture.target.files[0]
-      setNewUserPhotoObjectURL(URL.createObjectURL(file))
+      setNewUserPhotoFile(file)
       setUserPhotoURL(file.name)
     } catch (error) {
       console.log("Error uploading your profile image")
@@ -91,7 +131,6 @@ const UpdateAccount = () => {
               type="file" 
               id="newUserPhoto"
               accept="image/*"
-              // TODO: アップロードされた写真データを保存、表示するためにはどうすればいいか、考えること
               onChange={handleUploadingFile}
             />
             <Typography variant='body1'>↑プロフィール写真を登録</Typography>
@@ -100,8 +139,8 @@ const UpdateAccount = () => {
           <Box sx={{position: 'relative'}}>
             <Box
               component='img'
-              id='photoURL'
-              src={newUserPhotoObjectURL === '' ? userPhotoURL : newUserPhotoObjectURL}
+              id='profile_picture_path'
+              src={newUserPhotoFile === null ? userPhotoURL : URL.createObjectURL(newUserPhotoFile)}
               alt="プロフィール画像"
               // TODO: プロフィール写真のサイズは予め決められているのか？
               sx={{width: '50%'}}  
@@ -116,23 +155,22 @@ const UpdateAccount = () => {
               type="file" 
               id="updateUserPhoto"
               accept="image/*"
-              // TODO: 更新された写真データを保存、表示するためにはどうすればいいか、考えること
               onChange={handleUploadingFile}
             />
           </Box>
         }
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
-          {...register("username", {
+          {...register("screen_name", {
             required: true,
-            value: getValues("username")
+            value: getValues("screen_name")
           })}
           variant="outlined"
           margin="normal"
           fullWidth
-          id="username"
+          id="screen_name"
           label="ユーザーネーム"
-          name="username"
+          name="screen_name"
         />
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
@@ -149,18 +187,18 @@ const UpdateAccount = () => {
         />
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
-          {...register("introduction", {
+          {...register("description", {
             required: true,
-            value: getValues("introduction")
+            value: getValues("description")
           })}
           multiline
           minRows="3"
           variant="outlined"
           margin="normal"
           fullWidth
-          id="introduction"
+          id="description"
           label="自己紹介"
-          name="introduction"
+          name="description"
         />
         <Button
           type="submit"
@@ -186,4 +224,4 @@ const UpdateAccount = () => {
   )
 }
 
-export default UpdateAccount;
+export default UpdateAccount
