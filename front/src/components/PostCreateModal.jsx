@@ -11,6 +11,7 @@ import {
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import imageCompression from 'browser-image-compression'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 const style = {
   position: 'absolute',
@@ -40,14 +41,37 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
   const [afterImage, setAfterImage] = useState(null)
+  const [beforeDownloadUrl, setBeforeDownloadUrl] = useState('')
+  const [afterDownloadUrl, setAfterDownloadUrl] = useState('')
   const { register, handleSubmit, reset } = useForm()
 
   const toggleEdit = (e) => {
     setEditState(e.target.value)
   }
 
+  // Get a reference to the storage service, which is used to create references in your storage bucket
+  const storage = getStorage()
+
+  // Create a storage reference from our storage service
+  const postsRef = ref(storage, 'posts')
+
+  const getUploadBytes = async (beforePictureRef, beforeImage, suffix) => {
+    await uploadBytes(beforePictureRef, beforeImage)
+    return getDownloadURL(beforePictureRef, 'posts/' + beforePictureRef.name + suffix)
+  }
+
   const onSubmit = (data) => {
     console.log(data)
+    // Child references can also take paths delimited by '/'
+    const beforePictureRef = ref(storage, 'posts/' + beforeImage.name + '.before')
+    const afterPictureRef = ref(storage, 'posts/' + afterImage.name + '.after')
+    Promise.all([
+      getUploadBytes(beforePictureRef, beforeImage, '.before'),
+      getUploadBytes(afterPictureRef, afterImage, '.after'),
+    ]).then(([beforeUrl, afterUrl]) => {
+      console.log(beforeUrl, afterUrl)
+      
+    })
   }
 
   const handleClose = () => {
@@ -138,7 +162,7 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
           variant="outlined"
           rows={6}
           sx={{ width: '100%', maxHeight: '50vh' }}
-          {...register(`${beforeOrAfter}_text`, { required: true })}
+          {...register(`${beforeOrAfter}_text`)}
         />
         {!imageUrl && (
           <>
