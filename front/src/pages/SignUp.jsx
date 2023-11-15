@@ -6,12 +6,22 @@ import {
   createUserWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
+  onAuthStateChanged,
 } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import googleSignUpImage from '../assets/google/google_sign_up.png'
+import { useEffect } from 'react'
 
 const SignUp = () => {
   const navigate = useNavigate()
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        navigate('/')
+      }
+    })
+  }, [])
 
   const {
     register,
@@ -161,7 +171,9 @@ const SignUp = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
               }}>
-              <Link to='/login' component={routerLink} >ログインへ</Link>
+              <Link to="/login" component={routerLink}>
+                ログインへ
+              </Link>
             </Box>
           </form>
         </Box>
