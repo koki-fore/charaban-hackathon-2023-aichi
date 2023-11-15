@@ -13,8 +13,8 @@ from schemas.post_schema import PostWithComment as PostWithComment_schema
 
 
 def create_post(
-    db: Session,
-    post_create: PostCreate_schema
+    post_create: PostCreate_schema,
+    db: Session
     ) -> Post_model:
     post = Post_model(**post_create.model_dump())
     db.add(post)
@@ -36,5 +36,8 @@ def get_post_with_comments(
 def get_recommended_posts():
     pass
 
-def update_post_is_delete():
+def update_post_is_delete(
+    
+    db: Session
+    ):
     pass    
