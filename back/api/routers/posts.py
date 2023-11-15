@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+# from .auth import auth_user
 
 router = APIRouter()
 
@@ -21,3 +22,7 @@ def list_recommended_post():
 @router.put("/posts/{posts_id}/delete")
 def update_post_delete_at():
     pass
+
+# @router.post("/test")
+# def test(uid: int = Depends(auth_user)):
+#     return uid
