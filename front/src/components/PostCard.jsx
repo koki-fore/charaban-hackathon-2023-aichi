@@ -32,23 +32,6 @@ import { useEffect, useRef, useState } from 'react'
  * @property {User} user
  */
 
-/** @type { Post } */
-const duymmyPost = {
-  id: 1,
-  user_FK: 1,
-  before_picture_path: 'https://picsum.photos/200/300',
-  after_picture_path: 'https://picsum.photos/400/300',
-  after_text:
-    '6イニング3自責点は ERA (Earned Run Average＝防御率) にすると 4.5 となり、あまり良いとは言えないように見えるが、2010年シーズン以降の MLB 全体の防御率が 4.08 (2010)、3.94 (2011)、4.01 (2012) であることを見れば、現在でも妥当なラインだと思われる。',
-  before_text: 'before_text',
-  created_at: '2021-10-01 00:00:00',
-  user: {
-    id: 1,
-    screen_name: 'ユーザー名',
-    profile_picture_path: 'https://picsum.photos/200/300',
-  },
-}
-
 export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) => {
   const childRef = useRef(null)
   const [postRotate, setPostRotate] = useState(false)
@@ -57,7 +40,6 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
   const [contentHeight, setContentHeight] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [numLiked, setNumLiked] = useState(0)
-  post = duymmyPost
 
   const handleLike = () => {
     console.log('like')
@@ -159,6 +141,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
             handleLike={handleLike}
             isLiked={isLiked}
             numLiked={numLiked}
+            postId={post.id}
           />
         </Stack>
       </Box>

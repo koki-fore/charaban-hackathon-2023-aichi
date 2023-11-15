@@ -11,6 +11,7 @@ import {
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import imageCompression from 'browser-image-compression'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 const style = {
   position: 'absolute',
@@ -38,22 +39,46 @@ const selectedStyle = {
 
 export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   const [editState, setEditState] = useState('before')
-  const [beforeImageUrl, setBeforeImageUrl] = useState('')
-  const [afterImageUrl, setAfterImageUrl] = useState('')
+  const [beforeImage, setBeforeImage] = useState(null)
+  const [afterImage, setAfterImage] = useState(null)
+  const [beforeDownloadUrl, setBeforeDownloadUrl] = useState('')
+  const [afterDownloadUrl, setAfterDownloadUrl] = useState('')
   const { register, handleSubmit, reset } = useForm()
 
   const toggleEdit = (e) => {
     setEditState(e.target.value)
   }
 
+  // Get a reference to the storage service, which is used to create references in your storage bucket
+  const storage = getStorage()
+
+  // Create a storage reference from our storage service
+  const postsRef = ref(storage, 'posts')
+
+  const getUploadBytes = async (beforePictureRef, beforeImage, suffix) => {
+    await uploadBytes(beforePictureRef, beforeImage)
+    return getDownloadURL(beforePictureRef, 'posts/' + beforePictureRef.name + suffix)
+  }
+
   const onSubmit = (data) => {
     console.log(data)
+    // Child references can also take paths delimited by '/'
+    const beforePictureRef = ref(storage, 'posts/' + beforeImage.name + '.before')
+    const afterPictureRef = ref(storage, 'posts/' + afterImage.name + '.after')
+    // Promise.allを使って並行処理と同期処理を同時に行う
+    Promise.all([
+      getUploadBytes(beforePictureRef, beforeImage, '.before'),
+      getUploadBytes(afterPictureRef, afterImage, '.after'),
+    ]).then(([beforeUrl, afterUrl]) => {
+      console.log(beforeUrl, afterUrl)
+      // TODO: axiosでPosts
+    })
   }
 
   const handleClose = () => {
     closeModal()
-    setBeforeImageUrl('')
-    setAfterImageUrl('')
+    setBeforeImage(null)
+    setAfterImage(null)
     reset()
   }
 
@@ -78,15 +103,13 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
             beforeOrAfter={'before'}
             register={register}
             sx={{ my: 2, display: editState !== 'before' && 'none' }}
-            imageUrl={beforeImageUrl}
-            setImageUrl={setBeforeImageUrl}
+            setImage={setBeforeImage}
           />
           <ModalContentInput
             beforeOrAfter={'after'}
             register={register}
             sx={{ my: 2, display: editState !== 'after' && 'none' }}
-            imageUrl={afterImageUrl}
-            setImageUrl={setAfterImageUrl}
+            setImage={setAfterImage}
           />
           <Box sx={{ textAlign: 'right' }}>
             <Button type="button" variant="outlined" onClick={handleClose}>
@@ -101,10 +124,10 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
     </Modal>
   )
 }
-// TODO: 画像のプレビュー機能
-const ModalContentInput = ({ beforeOrAfter, register, imageUrl, setImageUrl, sx, className }) => {
+
+const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className }) => {
   const imageInput = useRef(null)
-  const [image, setImage] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
   const handleChangeImage = async (e) => {
     const file = e.target.files[0]
     console.log('file', file)
@@ -140,7 +163,7 @@ const ModalContentInput = ({ beforeOrAfter, register, imageUrl, setImageUrl, sx,
           variant="outlined"
           rows={6}
           sx={{ width: '100%', maxHeight: '50vh' }}
-          {...register(`${beforeOrAfter}_text`, { required: true })}
+          {...register(`${beforeOrAfter}_text`)}
         />
         {!imageUrl && (
           <>

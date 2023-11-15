@@ -1,9 +1,8 @@
 import { Box, IconButton, Grid } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, sx }) => {
-  const handleComment = () => {
-    console.log('comment')
-  }
+export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, postId, sx }) => {
+  const navigate = useNavigate()
 
   return (
     <>
@@ -15,7 +14,7 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, sx
                 <img
                   src="/comment.svg"
                   alt="to comment"
-                  onClick={handleComment}
+                  onClick={() => navigate(`/comment/${postId}`)}
                   width="100%"
                   height="100%"
                 />
