@@ -7,6 +7,7 @@ import {
   Stack,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material'
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -45,6 +46,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   const [beforeImage, setBeforeImage] = useState(null)
   const [afterImage, setAfterImage] = useState(null)
   const { register, handleSubmit, reset } = useForm()
+  const [isLoading, setIsLoading] = useState(false)
   const timestamp = dayjs().format('YYMMDDHHmmss')
 
   const toggleEdit = (e) => {
@@ -60,6 +62,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   }
 
   const onSubmit = (data) => {
+    setIsLoading(true)
     console.log(data)
     // Child references can also take paths delimited by '/'
     const beforePictureRef = ref(storage, 'posts/' + timestamp + beforeImage.name + '.before')
@@ -81,6 +84,9 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
       .then((res) => {
         console.log(res)
         closeModal()
+      })
+      .finally(() => {
+        setIsLoading(false)
       })
   }
 
@@ -124,8 +130,19 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
             <Button type="button" variant="outlined" onClick={handleClose}>
               キャンセル
             </Button>
-            <Button type="submit" variant="contained" sx={{ ml: 2 }}>
-              投稿
+            <Button type="submit" variant="contained" sx={{ ml: 2 }} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  投稿中
+                  <CircularProgress
+                    color="grayText"
+                    size={24}
+                    sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+                  />
+                </>
+              ) : (
+                '投稿'
+              )}
             </Button>
           </Box>
         </form>
