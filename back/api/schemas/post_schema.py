@@ -19,7 +19,7 @@ class Post(PostCreate):
 	created_at: datetime
 	updated_at: datetime
 	is_deleted: bool
-	user: User
+	users: User
 
 class PostWithUser(Post):
 	pass
