@@ -5,7 +5,6 @@ from .comment_schema import CommentWithUser
 from typing import List
 
 class PostCreate(BaseModel):
-	user_fk: int
 	before_picture_path: str
 	after_picture_path: str
 	before_text: str
@@ -16,6 +15,7 @@ class PostUpdate():
 
 class Post(PostCreate):
 	id: int
+	user_fk: int
 	created_at: datetime
 	updated_at: datetime
 	is_deleted: bool

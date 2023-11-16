@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import CssBaseline from '@mui/material/CssBaseline'
 import './index.css'
@@ -10,6 +9,9 @@ import SignUp from './pages/SignUp.jsx'
 import Top from './pages/Top'
 import PrivateRoutes from './components/PrivateRoutes.jsx'
 import Comment from './pages/Comment'
+
+import UserProfile from './pages/UserProfile.jsx'
+import UpdateAccount from './pages/UpdateAccount.jsx'
 
 const theme = createTheme({
   typography: {
@@ -29,7 +31,7 @@ const theme = createTheme({
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <BrowserRouter>
@@ -40,10 +42,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/login" element={<Login />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/comment/:postId" element={<Comment />} />
+              <Route path="/user-profile" element={<UserProfile />} />
+              <Route path="/updateAccount" element={<UpdateAccount />} />
             </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
