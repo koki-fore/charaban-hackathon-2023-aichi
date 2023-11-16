@@ -52,9 +52,6 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage()
 
-  // Create a storage reference from our storage service
-  const postsRef = ref(storage, 'posts')
-
   const getUploadBytes = async (beforePictureRef, beforeImage, suffix) => {
     await uploadBytes(beforePictureRef, beforeImage)
     return getDownloadURL(beforePictureRef, 'posts/' + beforePictureRef.name + suffix)
