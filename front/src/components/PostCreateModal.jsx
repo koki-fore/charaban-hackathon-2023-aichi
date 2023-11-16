@@ -63,7 +63,11 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
 
   const onSubmit = (data) => {
     setIsLoading(true)
-    console.log(data)
+    data = {
+      ...data,
+      before_text: data.before_text.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'),
+      after_text: data.after_text.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'),
+    }
     // Child references can also take paths delimited by '/'
     const beforePictureRef = ref(storage, 'posts/' + timestamp + beforeImage.name + '.before')
     const afterPictureRef = ref(storage, 'posts/' + timestamp + afterImage.name + '.after')

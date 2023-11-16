@@ -1,5 +1,6 @@
 import { Box, Typography, Stack } from '@mui/material'
 import { useEffect, useRef } from 'react'
+import parse from 'html-react-parser'
 
 /**
  * @typedef {Object} Post
@@ -40,7 +41,7 @@ export const PostCardContent = ({ /** @type {Post} */ post, sx, className, setCh
         </Stack>
         <Box>
           <Typography sx={{ overflowWrap: 'normal', wordBreak: 'break-word', mx: 3 }}>
-            {post.text}
+            {parse(post.text)}
           </Typography>
         </Box>
       </Stack>
