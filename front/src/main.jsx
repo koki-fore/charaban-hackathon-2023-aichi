@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import CssBaseline from '@mui/material/CssBaseline'
 import './index.css'
@@ -29,7 +28,7 @@ const theme = createTheme({
 })
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <BrowserRouter>
@@ -45,5 +44,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )
