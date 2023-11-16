@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from .auth import auth_user
+from utils.auth import auth_user
 from sqlalchemy.orm import Session
 from typing import List
 
