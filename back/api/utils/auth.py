@@ -12,7 +12,7 @@ def get_uid(auth_key: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     except:
         raise HTTPException(status_code=401, detail="Invalid auth key.")
     
-def auth_user(db: Session, uid: str = Depends(get_uid)):
+def auth_user(db: Session = Depends(db_session), uid: str = Depends(get_uid)):
     user = get_user_by_firebase(db, uid)
     if user is None:
         raise HTTPException(status_code=404, detail="Invalid user.")
