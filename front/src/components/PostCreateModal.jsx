@@ -12,6 +12,7 @@ import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import imageCompression from 'browser-image-compression'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { useAuthContext } from '../context/AuthContext'
 
 const style = {
   position: 'absolute',
@@ -38,6 +39,7 @@ const selectedStyle = {
 }
 
 export const PostCreateModal = ({ open, closeModal, sx, className }) => {
+  const { authApi } = useAuthContext()
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
   const [afterImage, setAfterImage] = useState(null)
@@ -66,10 +68,20 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
     Promise.all([
       getUploadBytes(beforePictureRef, beforeImage, '.before'),
       getUploadBytes(afterPictureRef, afterImage, '.after'),
-    ]).then(([beforeUrl, afterUrl]) => {
-      console.log(beforeUrl, afterUrl)
-      // TODO: axiosでPosts
-    })
+    ])
+      .then(([beforeUrl, afterUrl]) => {
+        console.log(beforeUrl, afterUrl)
+        console.log(data)
+        return authApi.post('/posts', {
+          ...data,
+          before_picture_path: beforeUrl,
+          after_picture_path: afterUrl,
+        })
+      })
+      .then((res) => {
+        console.log(res)
+        closeModal()
+      })
   }
 
   const handleClose = () => {

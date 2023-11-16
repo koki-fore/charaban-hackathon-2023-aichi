@@ -15,4 +15,4 @@ def auth_user(uid: str = Depends(get_uid), db = Depends(db_session)):
     user = db.query(User).filter(User.firebase_id == uid).first()
     if user is None:
         raise HTTPException(status_code=404, detail="Invalid user.")
-    return user.id
+    return user
