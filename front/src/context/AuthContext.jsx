@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     headers: {
       Authorization: `Bearer ${user && user.accessToken}`,
     },
-  });
+  })
 
   const value = {
     user,

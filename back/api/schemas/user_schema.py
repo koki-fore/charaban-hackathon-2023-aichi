@@ -7,9 +7,11 @@ class UserCreate(BaseModel):
 	description: str
 	profile_picture_path: str
 
-class UserUpdate(UserCreate):
-	pass
-
+class UserUpdate(BaseModel):
+	screen_name: str
+	description: str
+	profile_picture_path: str
+  
 class User(UserCreate):
 	id: int
 	created_at: datetime
