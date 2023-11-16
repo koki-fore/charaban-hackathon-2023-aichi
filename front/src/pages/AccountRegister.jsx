@@ -3,9 +3,12 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Typography, Modal } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { getStorage, ref, uploadString, getDownloadURL, uploadBytes } from 'firebase/storage'
 import '../styles/AccountRegister.css'
 import ReactCrop, { centerCrop, makeAspectCrop, convertToPixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
+import dayjs from 'dayjs'
+import { useAuthContext } from '../context/AuthContext'
 
 const style = {
   position: 'absolute',
@@ -21,8 +24,14 @@ const style = {
 
 const AccountRegister = () => {
   const navigate = useNavigate()
+  const timestamp = dayjs().format('YYMMDDHHmmss')
+  const [profileImage, setProfileImage] = useState(null)
+  const [fileName, setFileName] = useState('')
+  const { authApi } = useAuthContext()
 
-  const [profileImage, setProfileImage] = useState('')
+  // Get a reference to the storage service, which is used to create references in your storage bucket
+  const storage = getStorage()
+
   const [completedCrop, setCompletedCrop] = useState(null)
   const [crop, setCrop] = useState()
   const [open, setOpen] = useState(false)
@@ -40,6 +49,7 @@ const AccountRegister = () => {
       return
     }
     const fileObject = event.target.files[0]
+    setFileName(fileObject.name)
     setProfileImage(window.URL.createObjectURL(fileObject))
     handleOpen()
   }
@@ -51,10 +61,30 @@ const AccountRegister = () => {
     formState: { errors },
   } = useForm()
 
-  const submit = () => {
-    console.log('submit')
-    // TODO: axiosでuserのput処理記述
-    navigate('/login')
+  const submit = (data) => {
+    const profilePictureRef = ref(storage, 'users/' + timestamp + fileName)
+    uploadString(profilePictureRef, profileImage.split(',')[1], 'base64').then(() => {
+      // complete updated
+      getDownloadURL(profilePictureRef)
+        .then((url) => {
+          // axiosでユーザー情報を変更
+          authApi
+            .put('/users/me', {
+              screen_name: data.screen_name,
+              description: '',
+              profile_picture_path: url,
+            })
+            .then(() => {
+              navigate('/')
+            })
+            .catch((e) => {
+              console.error(e)
+            })
+        })
+        .catch((e) => {
+          console.error(e)
+        })
+    })
   }
 
   const aspectCrop = (mediaWidth, mediaHeight) => {
@@ -99,7 +129,7 @@ const AccountRegister = () => {
     )
     const base64Image = canvas.toDataURL('image/jpeg')
     setProfileImage(base64Image)
-    console.log(completedCrop)
+    console.log(base64Image)
     handleClose()
   }
 

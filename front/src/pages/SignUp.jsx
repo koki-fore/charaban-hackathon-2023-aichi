@@ -15,12 +15,13 @@ import IconButton from '@mui/material/IconButton'
 import Collapse from '@mui/material/Collapse'
 import Alert from '@mui/material/Alert'
 import AccountRegister from './AccountRegister'
+import { api } from '../util/axios'
 
 const SignUp = () => {
   const navigate = useNavigate()
 
   const [showAlert, setShowAlert] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(true)
+  const [isSignUp, setIsSignUp] = useState(false)
 
   const {
     register,
@@ -35,8 +36,20 @@ const SignUp = () => {
       .then((userCredential) => {
         const user = userCredential.user
         console.log(user)
-        // TODO: axiosのユーザー登録処理記述
-        setIsSignUp(true)
+        api
+          .post('/users', {
+            firebase_id: user.uid,
+            screen_name: '名無しさん',
+            description: '',
+            profile_picture_path: '',
+          })
+          .then((res) => {
+            console.log(res)
+            setIsSignUp(true)
+          })
+          .catch((error)=> {
+            console.log(error)
+          })
       })
       .catch((error) => {
         console.log(error)
