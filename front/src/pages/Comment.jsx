@@ -20,7 +20,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
  * @property {string} after_text
  * @property {string} before_text
  * @property {string} created_at
- * @property {User} user
+ * @property {User} users
  */
 
 /**
@@ -30,7 +30,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
  * @property {number} post_FK
  * @property {string} text
  * @property {string} created_at
- * @property {User} user
+ * @property {User} users
  */
 
 /** @type { PostResponse } */
@@ -58,7 +58,7 @@ const dummyComments = [
     post_FK: 1,
     text: 'コメント',
     created_at: '2021-10-01 00:00:00',
-    user: {
+    users: {
       id: 1,
       screen_name: 'ユーザー名1',
       profile_picture_path: 'https://picsum.photos/200/300',
@@ -70,7 +70,7 @@ const dummyComments = [
     post_FK: 1,
     text: 'コメント2',
     created_at: '2021-10-01 00:00:00',
-    user: {
+    users: {
       id: 1,
       screen_name: 'ユーザー名2',
       profile_picture_path: 'https://picsum.photos/300/300',
@@ -82,7 +82,7 @@ const dummyComments = [
     post_FK: 1,
     text: 'コメント3',
     created_at: '2021-10-01 00:00:00',
-    user: {
+    users: {
       id: 1,
       screen_name: 'ユーザー名3',
       profile_picture_path: 'https://picsum.photos/200/400',

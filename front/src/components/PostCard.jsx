@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from 'react'
  * @property {string} after_text
  * @property {string} before_text
  * @property {string} created_at
- * @property {User} user
+ * @property {User} users
  */
 
 /**
@@ -29,7 +29,7 @@ import { useEffect, useRef, useState } from 'react'
  * @property {string} picture_path
  * @property {string} text
  * @property {string} created_at
- * @property {User} user
+ * @property {User} users
  */
 
 export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) => {
@@ -103,7 +103,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
           data-post-id={post.id}
           ref={childRef}>
           <PostCardHeader
-            user={post.user}
+            user={post.users}
             datetime={post.created_at}
             sx={{
               backgroundColor: '#fff',
