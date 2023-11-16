@@ -11,7 +11,7 @@ def create_post(
     user_id: int,
     ) -> db_models.Post:
     post = db_models.Post(**post_create.model_dump())
-    # post.user_fk = user_id
+    post.user_fk = user_id
     db.add(post)
     db.commit()
     db.refresh(post)
