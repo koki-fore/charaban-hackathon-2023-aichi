@@ -6,7 +6,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
-  onAuthStateChanged,
 } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import googleSignUpImage from '../assets/google/google_sign_up.png'

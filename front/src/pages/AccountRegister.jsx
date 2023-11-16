@@ -1,14 +1,33 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Box, TextField, Button, Typography } from '@mui/material'
+import { Box, TextField, Button, Typography, Modal } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import '../styles/AccountRegister.css'
+import ReactCrop from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  minWidth: '300px',
+  boxShadow: 24,
+  p: 2,
+}
 
 const AccountRegister = () => {
   const navigate = useNavigate()
 
   const [profileImage, setProfileImage] = useState('')
+  const [completedCrop, setCompletedCrop] = useState()
+  const [crop, setCrop] = useState()
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const inputFileChange = (event) => {
     if (!event.target.files) {
@@ -21,6 +40,7 @@ const AccountRegister = () => {
     }
     const fileObject = event.target.files[0]
     setProfileImage(window.URL.createObjectURL(fileObject))
+    handleOpen()
   }
 
   const {
@@ -72,6 +92,21 @@ const AccountRegister = () => {
               inputFileChange(event)
             }}
           />
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description">
+            <Box sx={style}>
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={(c) => setCompletedCrop(c)}>
+                <img src={profileImage} />
+              </ReactCrop>
+            </Box>
+            <Button>適用する</Button>
+          </Modal>
         </Box>
         <TextField
           InputProps={{ sx: { borderRadius: 7 } }}
