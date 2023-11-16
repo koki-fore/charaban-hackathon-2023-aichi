@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Box, TextField, Button, Container, Typography } from '@mui/material'
+import { Box, TextField, Button, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import '../styles/AccountRegister.css'
 
