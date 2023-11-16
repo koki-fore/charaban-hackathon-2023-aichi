@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form'
 import imageCompression from 'browser-image-compression'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { useAuthContext } from '../context/AuthContext'
+import dayjs from 'dayjs'
 
 const style = {
   position: 'absolute',
@@ -43,9 +44,8 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
   const [afterImage, setAfterImage] = useState(null)
-  const [beforeDownloadUrl, setBeforeDownloadUrl] = useState('')
-  const [afterDownloadUrl, setAfterDownloadUrl] = useState('')
   const { register, handleSubmit, reset } = useForm()
+  const timestamp = dayjs().format('YYMMDDHHmmss')
 
   const toggleEdit = (e) => {
     setEditState(e.target.value)
@@ -54,16 +54,16 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage()
 
-  const getUploadBytes = async (beforePictureRef, beforeImage, suffix) => {
-    await uploadBytes(beforePictureRef, beforeImage)
-    return getDownloadURL(beforePictureRef, 'posts/' + beforePictureRef.name + suffix)
+  const getUploadBytes = async (pictureRef, image, suffix) => {
+    await uploadBytes(pictureRef, image)
+    return getDownloadURL(pictureRef, 'posts/' + timestamp + pictureRef.name + suffix)
   }
 
   const onSubmit = (data) => {
     console.log(data)
     // Child references can also take paths delimited by '/'
-    const beforePictureRef = ref(storage, 'posts/' + beforeImage.name + '.before')
-    const afterPictureRef = ref(storage, 'posts/' + afterImage.name + '.after')
+    const beforePictureRef = ref(storage, 'posts/' + timestamp + beforeImage.name + '.before')
+    const afterPictureRef = ref(storage, 'posts/' + timestamp + afterImage.name + '.after')
     // Promise.allを使って並行処理と同期処理を同時に行う
     Promise.all([
       getUploadBytes(beforePictureRef, beforeImage, '.before'),
