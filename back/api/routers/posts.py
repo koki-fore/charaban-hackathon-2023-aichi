@@ -34,11 +34,9 @@ def get_post_with_comments(
         raise HTTPException(status_code=404, detail="Post not found")
     return post
 
-@router.get("/posts/recommended")
-def list_recommended_post():
-    if list_recommended_post is None:
-        raise HTTPException(status_code=404, detail="Posts not found")
-    pass
+@router.get("/posts/recommended", response_model=List[posts_schemas.PostWithLikeCount])
+def list_recommended_post(db: Session = Depends(db_session)):
+    return posts_cruds.get_recommended_posts(db=db)
 
 @router.put("/posts/{posts_id}/delete", response_model=posts_schemas.Post)
 def update_post_is_delete(
@@ -54,7 +52,6 @@ def update_post_is_delete(
 @router.delete("/posts/{post_id}")
 def delete_post(
     post_id: int,
-    # uid: int = Depends(auth_user),
     db: Session = Depends(db_session)
     ):
     post = posts_cruds.get_post(db, post_id)
