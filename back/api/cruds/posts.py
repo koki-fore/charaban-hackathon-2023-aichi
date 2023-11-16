@@ -1,17 +1,8 @@
 from sqlalchemy.orm import Session
-# from sqlalchemy.engine import Result
-# from sqlalchemy import select
-# from datetime import datetime
 from typing import List
 
 import models.db_models as db_models
 import schemas.post_schema as posts_schema
-#from models.db_models import Post as Post_model, Comment as Comment_model
-#from schemas.post_schema import PostCreate as PostCreate_schema
-#from schemas.post_schema import PostUpdate as PostUpdate_schema
-#from schemas.post_schema import Post as Post_schema
-#from schemas.post_schema import PostWithUser as PostWithUser_schema
-#from schemas.post_schema import PostWithComment as PostWithComment_schema
 
 
 def create_post(
