@@ -13,13 +13,13 @@ router = APIRouter()
 def list_posts(
     db: Session = Depends(db_session)
     ):
-    if list_posts is None:
-        raise HTTPException(status_code=404, detail="Posts not found")
-    return posts_cruds.get_all_posts(db)
+    posts = posts_cruds.get_all_posts(db)
+    return posts
 
 @router.post("/posts", response_model=posts_schemas.PostCreate)
 def create_post(
     post_body: posts_schemas.PostCreate,
+    # uid: int = Depends(auth_user),
     db: Session = Depends(db_session)
     ):
     return posts_cruds.create_post(db, post_body)
@@ -29,9 +29,10 @@ def get_post_with_comments(
     post_id: int, 
     db: Session = Depends(db_session)
     ):
-    if get_post_with_comments is None:
+    post = posts_cruds.get_post(db, post_id)
+    if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-    return posts_cruds.get_post_with_comments(db, post_id)
+    return post
 
 @router.get("/posts/recommended")
 def list_recommended_post():
@@ -42,16 +43,18 @@ def list_recommended_post():
 @router.put("/posts/{posts_id}/delete", response_model=posts_schemas.Post)
 def update_post_is_delete(
     post_id: int,
+    # uid: int = Depends(auth_user),
     db: Session = Depends(db_session)
     ):
     post = posts_cruds.get_post(db, post_id)
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-    return posts_cruds.update_post_is_delete(db, original=post)
+    return posts_cruds.update_post_is_delete(db, post)
 
 @router.delete("/posts/{post_id}")
 def delete_post(
     post_id: int,
+    # uid: int = Depends(auth_user),
     db: Session = Depends(db_session)
     ):
     post = posts_cruds.get_post(db, post_id)
