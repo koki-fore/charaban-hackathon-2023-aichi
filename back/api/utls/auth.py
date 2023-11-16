@@ -1,8 +1,9 @@
 from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from firebase_admin import auth
 from db_sync_session import db_session
-from models.db_models import User
+from cruds.user_crud import get_user_by_firebase
 
 def get_uid(auth_key: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     try:
@@ -11,8 +12,8 @@ def get_uid(auth_key: str = Depends(OAuth2PasswordBearer(tokenUrl="token"))):
     except:
         raise HTTPException(status_code=401, detail="Invalid auth key.")
     
-def auth_user(uid: str = Depends(get_uid), db = Depends(db_session)):
-    user = db.query(User).filter(User.firebase_id == uid).first()
+def auth_user(db: Session, uid: str = Depends(get_uid)):
+    user = get_user_by_firebase(db, uid)
     if user is None:
         raise HTTPException(status_code=404, detail="Invalid user.")
-    return user.id
+    return user
