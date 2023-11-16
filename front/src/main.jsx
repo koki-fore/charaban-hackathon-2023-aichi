@@ -10,6 +10,9 @@ import Top from './pages/Top'
 import PrivateRoutes from './components/PrivateRoutes.jsx'
 import Comment from './pages/Comment'
 
+import UserProfile from './pages/UserProfile.jsx'
+import UpdateAccount from './pages/UpdateAccount.jsx'
+
 const theme = createTheme({
   typography: {
     fontFamily: ['Noto Sans JP', 'sans-serif'].join(','),
@@ -39,6 +42,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/login" element={<Login />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/comment/:postId" element={<Comment />} />
+              <Route path="/user-profile" element={<UserProfile />} />
+              <Route path="/updateAccount" element={<UpdateAccount />} />
             </Route>
           </Routes>
         </BrowserRouter>
