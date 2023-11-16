@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import CssBaseline from '@mui/material/CssBaseline'
-// import './index.css'
+import './index.css'
 import { createTheme, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
@@ -11,7 +11,7 @@ import Top from './pages/Top'
 import PrivateRoutes from './components/PrivateRoutes.jsx'
 import Comment from './pages/Comment'
 
-import AccountPage from './pages/AccountPage.jsx'
+// import AccountPage from './pages/AccountPage.jsx'
 import UpdateAccount from './pages/UpdateAccount.jsx'
 
 const theme = createTheme({
@@ -43,7 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/login" element={<Login />} />
             <Route element={<PrivateRoutes />}>
               <Route path="/comment/:postId" element={<Comment />} />
-              <Route path='/user-profile' element={<AccountPage />} />
+              {/* <Route path='/user-profile' element={<AccountPage />} /> */}
               <Route path='/updateAccount' element={<UpdateAccount />} />
             </Route>
           </Routes>
