@@ -25,7 +25,7 @@ const style = {
 const AccountRegister = () => {
   const navigate = useNavigate()
   const timestamp = dayjs().format('YYMMDDHHmmss')
-  const [profileImage, setProfileImage] = useState(null)
+  const [profileImage, setProfileImage] = useState('')
   const [fileName, setFileName] = useState('')
   const { authApi } = useAuthContext()
 
