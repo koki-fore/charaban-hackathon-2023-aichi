@@ -14,8 +14,6 @@ def list_posts(
     db: Session = Depends(db_session)
     ):
     posts = posts_cruds.get_all_posts(db)
-    # if posts is None:
-    #     raise HTTPException(status_code=404, detail="Posts not found")
     return posts
 
 @router.post("/posts", response_model=posts_schemas.PostCreate)

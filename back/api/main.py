@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import posts, likes
 from fastapi.exceptions import ResponseValidationError
 from fastapi.responses import JSONResponse
-from routers import posts, likes
 import firebase_admin
 from starlette.requests import Request
 
