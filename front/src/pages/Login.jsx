@@ -133,7 +133,7 @@ const Login = () => {
                         <CloseIcon fontSize="inherit" />
                       </IconButton>
                     }
-                    sx={{ mb: 2 }}>
+                    sx={{ mb: 2, borderRadius:6 }}>
                     メールアドレスかパスワードに誤りがあります
                   </Alert>
                 </Collapse>

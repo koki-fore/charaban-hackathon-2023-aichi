@@ -10,10 +10,16 @@ import {
 } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import googleSignUpImage from '../assets/google/google_sign_up.png'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
+import IconButton from '@mui/material/IconButton'
+import Collapse from '@mui/material/Collapse'
+import Alert from '@mui/material/Alert'
 
 const SignUp = () => {
   const navigate = useNavigate()
+
+  const [showAlert, setShowAlert] = useState(false)
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -32,7 +38,6 @@ const SignUp = () => {
   } = useForm()
 
   const onSubmit = (event) => {
-    console.log(event.email, event.password)
     createUserWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
         const user = userCredential.user
@@ -40,6 +45,7 @@ const SignUp = () => {
       })
       .catch((error) => {
         console.log(error)
+        setShowAlert(true)
       })
   }
 
@@ -152,6 +158,28 @@ const SignUp = () => {
                 sx: { borderRadius: 7 },
               }}
             />
+            {showAlert && (
+              <Box sx={{ width: '100%' }}>
+                <Collapse in={showAlert}>
+                  <Alert
+                    severity="error"
+                    action={
+                      <IconButton
+                        aria-label="close"
+                        color="inherit"
+                        size="small"
+                        onClick={() => {
+                          setShowAlert(false)
+                        }}>
+                        <CloseIcon fontSize="inherit" />
+                      </IconButton>
+                    }
+                    sx={{ mb: 2, borderRadius:6 }}>
+                    すでにそのメールアドレスは登録されています
+                  </Alert>
+                </Collapse>
+              </Box>
+            )}
             <Button
               type="submit"
               variant="contained"
