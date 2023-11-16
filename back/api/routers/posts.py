@@ -19,9 +19,9 @@ def list_posts(
 @router.post("/posts", response_model=posts_schemas.PostCreate)
 def create_post(
     post_body: posts_schemas.PostCreate,
-    user = Depends(auth_user),
     db: Session = Depends(db_session)
     ):
+    user = auth_user(db)
     return posts_cruds.create_post(db, post_body, user.id)
 
 @router.get("/posts/{post_id}/comments", response_model=posts_schemas.PostWithComment)

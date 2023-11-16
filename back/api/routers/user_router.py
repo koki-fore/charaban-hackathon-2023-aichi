@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from db_sync_session import db_session
 from cruds.user_crud import *
 from schemas.user_schema import User, UserCreate, UserUpdate
-from utls.auth import auth_user
+from utils.auth import auth_user
 
 router = APIRouter()
 
