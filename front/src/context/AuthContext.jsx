@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
   const authApi = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     headers: {
-      Authorization: `Bearer ${user.accessToken}`,
+      Authorization: `Bearer ${user && user.accessToken}`,
     },
   });
 
