@@ -13,6 +13,7 @@ import Comment from './pages/Comment'
 
 import UserProfile from './pages/UserProfile.jsx'
 import UpdateAccount from './pages/UpdateAccount.jsx'
+import ChangePasswordForm from './pages/ChangePassWord'
 
 const theme = createTheme({
   typography: {
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/comment/:postId" element={<Comment />} />
               <Route path="/user-profile" element={<UserProfile />} />
               <Route path="/updateAccount" element={<UpdateAccount />} />
+              <Route path="/change-password" element={<ChangePasswordForm />}/>
             </Route>
           </Routes>
         </BrowserRouter>
