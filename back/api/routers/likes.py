@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -12,8 +12,11 @@ router = APIRouter()
 def create_like(
     like_body: likes_schema.LikeCreate,
     db: Session = Depends(db_session)
-    ) -> likes_schema.Like:
-    return likes_cruds.create_like(db, like_body)
+    ):
+    like = likes_cruds.create_like(db, like_body)
+    if like == "Like already exists":
+        raise HTTPException(status_code=400, detail="Like already exists")
+    return like
 
 @router.get("/likes", response_model=List[likes_schema.Like])
 def list_likes(
