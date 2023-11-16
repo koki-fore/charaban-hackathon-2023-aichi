@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Typography, Modal } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import '../styles/AccountRegister.css'
-import ReactCrop from 'react-image-crop'
+import ReactCrop, { centerCrop, makeAspectCrop, convertToPixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
 const style = {
@@ -23,9 +23,10 @@ const AccountRegister = () => {
   const navigate = useNavigate()
 
   const [profileImage, setProfileImage] = useState('')
-  const [completedCrop, setCompletedCrop] = useState()
+  const [completedCrop, setCompletedCrop] = useState(null)
   const [crop, setCrop] = useState()
   const [open, setOpen] = useState(false)
+  const imgRef = useRef(null)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -54,6 +55,52 @@ const AccountRegister = () => {
     console.log('submit')
     // TODO: axiosでuserのput処理記述
     navigate('/login')
+  }
+
+  const aspectCrop = (mediaWidth, mediaHeight) => {
+    return centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        1,
+        mediaWidth,
+        mediaHeight,
+      ),
+      mediaWidth,
+      mediaHeight,
+    )
+  }
+
+  const onImageLoad = (image) => {
+    setCrop(aspectCrop(image.width, image.height))
+    const size = Math.min(image.width, image.height)
+    setCompletedCrop({ x: 0, y: 0, width: size, height: size, unit: 'px' })
+  }
+
+  const applyCrop = () => {
+    const canvas = document.createElement('canvas')
+    const scaleX = imgRef.current.naturalWidth / imgRef.current.width
+    const scaleY = imgRef.current.naturalHeight / imgRef.current.height
+    canvas.width = completedCrop.width
+    canvas.height = completedCrop.height
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(
+      imgRef.current,
+      completedCrop.x * scaleX,
+      completedCrop.y * scaleY,
+      completedCrop.width * scaleX,
+      completedCrop.height * scaleY,
+      0,
+      0,
+      completedCrop.width,
+      completedCrop.height,
+    )
+    const base64Image = canvas.toDataURL('image/jpeg')
+    setProfileImage(base64Image)
+    console.log(completedCrop)
+    handleClose()
   }
 
   return (
@@ -100,12 +147,13 @@ const AccountRegister = () => {
             <Box sx={style}>
               <ReactCrop
                 crop={crop}
+                aspect={1}
                 onChange={(c) => setCrop(c)}
                 onComplete={(c) => setCompletedCrop(c)}>
-                <img src={profileImage} />
+                <img ref={imgRef} src={profileImage} onLoad={onImageLoad} />
               </ReactCrop>
+              <Button onClick={() => applyCrop()}>適用する</Button>
             </Box>
-            <Button>適用する</Button>
           </Modal>
         </Box>
         <TextField
