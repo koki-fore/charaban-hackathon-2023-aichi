@@ -1,15 +1,11 @@
 import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import { Link as routerLink, useNavigate } from 'react-router-dom'
+import { Link as routerLink } from 'react-router-dom'
 import { auth, provider } from '../firebase'
-import {
-  createUserWithEmailAndPassword,
-  signInWithRedirect,
-  GoogleAuthProvider,
-} from 'firebase/auth'
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { useForm } from 'react-hook-form'
 import googleSignUpImage from '../assets/google/google_sign_up.png'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import IconButton from '@mui/material/IconButton'
 import Collapse from '@mui/material/Collapse'
@@ -18,8 +14,6 @@ import AccountRegister from './AccountRegister'
 import { api } from '../util/axios'
 
 const SignUp = () => {
-  const navigate = useNavigate()
-
   const [showAlert, setShowAlert] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
 
@@ -47,7 +41,7 @@ const SignUp = () => {
             console.log(res)
             setIsSignUp(true)
           })
-          .catch((error)=> {
+          .catch((error) => {
             console.log(error)
           })
       })
@@ -58,17 +52,31 @@ const SignUp = () => {
   }
 
   const googleSignUp = () => {
-    signInWithRedirect(auth, provider)
+    signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = GoogleAuthProvider.credentialFromResult(result)
         const token = credential.accessToken
-        window.localStorage.setItem('isGoogleLogin', true)
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
         console.log(token)
         console.log(user)
+
+        api
+          .post('/users', {
+            firebase_id: user.uid,
+            screen_name: '名無しさん',
+            description: '',
+            profile_picture_path: '',
+          })
+          .then((res) => {
+            console.log(res)
+            setIsSignUp(true)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       })
       .catch((error) => {
         // Handle Errors here.

@@ -3,12 +3,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
 import { Link as routerLink } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   signInWithEmailAndPassword,
-  signInWithRedirect,
+  signInWithPopup,
   GoogleAuthProvider,
-  onAuthStateChanged,
 } from 'firebase/auth'
 import googleSignInImage from '../assets/google/google_sign_in.png'
 import { useForm } from 'react-hook-form'
@@ -45,7 +44,7 @@ const Login = () => {
   }
 
   const googleLogin = () => {
-    signInWithRedirect(auth, provider)
+    signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = GoogleAuthProvider.credentialFromResult(result)
@@ -54,6 +53,7 @@ const Login = () => {
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
+        navigate('/')
       })
       .catch((error) => {
         const credential = GoogleAuthProvider.credentialFromError(error)
