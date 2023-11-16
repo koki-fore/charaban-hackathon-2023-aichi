@@ -18,7 +18,7 @@ def create_post(
 def get_all_posts(
     db: Session
     ) -> List[posts_schema.Post]:
-    return db.query(db_models.Post).all()
+    return db.query(db_models.Post).filter(db_models.Post.is_deleted == False).all()
 
 def get_post(
     db: Session,
