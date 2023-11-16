@@ -20,14 +20,6 @@ import Alert from '@mui/material/Alert'
 const Login = () => {
   const navigate = useNavigate('')
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        navigate('/')
-      }
-    })
-  }, [])
-
   const [showAlert, setShowAlert] = useState(false)
 
   const {
