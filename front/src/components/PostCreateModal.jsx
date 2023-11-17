@@ -40,7 +40,7 @@ const selectedStyle = {
   },
 }
 
-export const PostCreateModal = ({ open, closeModal, sx, className }) => {
+export const PostCreateModal = ({ open, closeModal, sx, className, fetchPosts }) => {
   const { authApi } = useAuthContext()
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
@@ -91,6 +91,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
       })
       .finally(() => {
         setIsLoading(false)
+        fetchPosts()
       })
   }
 
