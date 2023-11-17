@@ -44,7 +44,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route element={<PrivateRoutes />}>
               <Route path="/comment/:postId" element={<Comment />} />
               <Route path="/user-profile" element={<UserProfile />} />
-              <Route path="/updateAccount" element={<UpdateAccount />} />
+              <Route path="/update-account" element={<UpdateAccount />} />
               <Route path="/change-password" element={<ChangePasswordForm />}/>
             </Route>
           </Routes>

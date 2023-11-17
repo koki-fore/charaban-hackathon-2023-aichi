@@ -4,9 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { Box, TextField, Button, Container, Typography } from '@mui/material'
 import { storage } from '../firebase'
 import { useAuthContext } from '../context/AuthContext'
+import { getStorage, ref, uploadString, getDownloadURL, uploadBytes } from 'firebase/storage'
+import dayjs from 'dayjs'
 
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
+import axios from 'axios'
 
 /**
  * @typedef {Object} Account
@@ -18,82 +21,62 @@ import InsertPhotoIcon from '@mui/icons-material/InsertPhoto'
 
 const UpdateAccount = () => {
   /** @type { Account } */
-  const {register, handleSubmit, getValues, setValue} = useForm({
+  const {register, handleSubmit, getValues} = useForm({
     screen_name: '',
     email: '',
     profile_picture_path: '',
     description: ''
   })
-
-  const { user } = useAuthContext()
-
-  const [userData, setUserData] = useState([])
+  const [userInfo, setUserInfo] = useState([])
   // ユーザーのプロフィール写真のURLを入れる状態変数
-  const [userPhotoURL, setUserPhotoURL] = useState('')
+  const [userPhotoFileName, setUserPhotoFileName] = useState('')
   // 新しくアップロードされた写真のファイルを入れる状態変数  
   const [newUserPhotoFile, setNewUserPhotoFile] = useState(null)
-
   const navigate = useNavigate()
+  const { user, authApi } = useAuthContext()
+  const timestamp = dayjs().format('YYMMDDHHmmss')
+  const URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log(user);
-        // const dataRef = database.ref('users');
-        // dataRef.get('value')
-        //   .then((snapshot) => {
-        //     // snapshot.val() で実際のデータを取得
-        //     setUserData(snapshot.val())
-        //   })
-        //   .catch((error) => {
-        //     console.error('データの取得中にエラーが発生しました:', error);
-        //   });
-        
-        // setValue('screen_name', userData.screen_name)
-        // setValue('email', userData.email)
-        // setValue('description', userData.description)
-
-        // setUserPhotoURL(userData.profile_picture_path)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
+    const fetchUser = () => {
+      axios.get("/users/me", {
+        headers: {
+          Authorization: 'Bearer ' + user.accessToken
+        }
+      }).
+      then( (user) => {
+          setUserInfo(user)
+      }).catch((error) => {
+          console.log(error)
+      })
     }
-    fetchData()
+    if (user) fetchUser()
   }, [])
 
-  const sendPhoto2Firebase = () => {
-    const uploadTask = storage.put(newUserPhotoFile)
-    uploadTask.on('state_changed',
-      (snapShot) => {
-        console.log(snapShot)
-      },
-      (err) => {
-        console.log(err)
-      },
-      () => {
-        storage.ref('images').child(newUserPhotoFile.name).getDownloadURL()
-          .then((fireBaseUrl) => {
-            console.log(fireBaseUrl)
-            return fireBaseUrl
-          })
-      }
-    )
-  }
-
-  const submit = async (value) => {
-    if (newUserPhotoFile !== null) setValue("profile_picture_path", sendPhoto2Firebase())
-    console.log(value);
-
-    // const dataRef = database.ref('yourDataPath');
-
-    // データを送信
-    // dataRef.set(data)
-    //   .then(() => {
-    //     console.log('データが正常に送信されました。');
-    //   })
-    //   .catch((error) => {
-    //     console.error('データの送信中にエラーが発生しました:', error);
-    //   });
+  const submit = (data) => {
+    const profilePictureRef = ref(storage, 'users/' + timestamp + userPhotoFileName)
+    uploadString(profilePictureRef, newUserPhotoFile.split(',')[1], 'base64').then(() => {
+      // complete updated
+      getDownloadURL(profilePictureRef)
+        .then((url) => {
+          // axiosでユーザー情報を変更
+          authApi
+            .put('/users/me', {
+              screen_name: data.screen_name,
+              description: data.description,
+              profile_picture_path: url,
+            })
+            .then(() => {
+              navigate('/')
+            })
+            .catch((e) => {
+              console.error(e)
+            })
+        })
+        .catch((e) => {
+          console.error(e)
+        })
+    })
   }
 
   const handleUploadingFile = (picture) => {
@@ -104,7 +87,7 @@ const UpdateAccount = () => {
       // 写真のデータそのものを取り出す。
       const file = picture.target.files[0]
       setNewUserPhotoFile(file)
-      setUserPhotoURL(file.name)
+      setUserPhotoFileName(file.name)
     } catch (error) {
       console.log("Error uploading your profile image")
       console.log(error.error_description || error.message)
@@ -117,7 +100,7 @@ const UpdateAccount = () => {
   return (
     <Container component="main" maxWidth="sm" sx={{marginTop: 5}} >
       <form onSubmit={handleSubmit(submit)}>
-        { userPhotoURL === '' ?
+        { userPhotoFileName === '' ?
           <Box>
             <label htmlFor='newUserPhoto'>
               <AddPhotoAlternateIcon sx={{width:200, height:200}} />
@@ -136,7 +119,7 @@ const UpdateAccount = () => {
             <Box
               component='img'
               id='profile_picture_path'
-              src={newUserPhotoFile === null ? userPhotoURL : URL.createObjectURL(newUserPhotoFile)}
+              src={newUserPhotoFile === null ? userPhotoFileName : URL.createObjectURL(newUserPhotoFile)}
               alt="プロフィール画像"
               // TODO: プロフィール写真のサイズは予め決められているのか？
               sx={{width: '50%'}}  
@@ -167,6 +150,7 @@ const UpdateAccount = () => {
           id="screen_name"
           label="ユーザーネーム"
           name="screen_name"
+          defaultValue={userInfo.screen_name}
         />
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
@@ -180,6 +164,7 @@ const UpdateAccount = () => {
           id="email"
           label="メールアドレス"
           name="email"
+          defaultValue={userInfo.email}
         />
         <TextField
           sx={{'.MuiOutlinedInput-root': { borderRadius: '18px' }}}
@@ -195,6 +180,7 @@ const UpdateAccount = () => {
           id="description"
           label="自己紹介"
           name="description"
+          defaultValue={userInfo.description}
         />
         <Button
           type="submit"
