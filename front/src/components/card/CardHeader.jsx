@@ -20,15 +20,15 @@ export const PostCardHeader = ({ /** @type {User} */ user, datetime, sx }) => {
           <Grid item>
             <IconButton onClick={handleNavigateToProfile} sx={{ p: 0 }}>
               <Avatar
-                alt={user.screen_name}
-                src={user.profile_picture_path}
+                alt="avatar"
+                src={user && user.profile_picture_path}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>
           </Grid>
           <Grid item>
             <Typography className="post-card-header__user-name" variant="h6">
-              {user.screen_name}
+              {user && user.screen_name}
             </Typography>
           </Grid>
         </Grid>
