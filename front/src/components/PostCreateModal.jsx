@@ -40,7 +40,7 @@ const selectedStyle = {
   },
 }
 
-export const PostCreateModal = ({ open, closeModal, sx, className }) => {
+export const PostCreateModal = ({ open, closeModal, sx, className, fetchPosts }) => {
   const { authApi } = useAuthContext()
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
@@ -91,6 +91,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
       })
       .finally(() => {
         setIsLoading(false)
+        fetchPosts()
       })
   }
 
@@ -131,10 +132,14 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
             setImage={setAfterImage}
           />
           <Box sx={{ textAlign: 'right' }}>
-            <Button type="button" variant="outlined" onClick={handleClose}>
+            <Button type="button" variant="outlined" onClick={handleClose} sx={{ borderRadius: 6 }}>
               キャンセル
             </Button>
-            <Button type="submit" variant="contained" sx={{ ml: 2 }} disabled={isLoading}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ ml: 2, borderRadius: 6 }}
+              disabled={isLoading}>
               {isLoading ? (
                 <>
                   投稿中

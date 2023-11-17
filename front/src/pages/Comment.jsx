@@ -1,14 +1,37 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Header, PostCard, CommentCard } from '../components'
 import { useEffect, useState } from 'react'
-import { Box, Divider, IconButton } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  Button,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { useAuthContext } from '../context/AuthContext'
+import { api } from '../util/axios'
+import axios from 'axios'
 
 /**
  * @typedef {Object} User
  * @property {number} id
  * @property {string} screen_name
  * @property {string} profile_picture_path
+ */
+
+/**
+ * @typedef {Object} Comment
+ * @property {number} id
+ * @property {number} user_FK
+ * @property {string} text
+ * @property {string} created_at
+ * @property {User} users
  */
 
 /**
@@ -21,6 +44,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
  * @property {string} before_text
  * @property {string} created_at
  * @property {User} users
+ * @property {Comment[]} comments
  */
 
 /**
@@ -33,72 +57,59 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
  * @property {User} users
  */
 
-/** @type { PostResponse } */
-const duymmyPost = {
-  id: 1,
-  user_FK: 1,
-  before_picture_path: 'https://picsum.photos/200/300',
-  after_picture_path: 'https://picsum.photos/400/300',
-  after_text:
-    '6イニング3自責点は ERA (Earned Run Average＝防御率) にすると 4.5 となり、あまり良いとは言えないように見えるが、2010年シーズン以降の MLB 全体の防御率が 4.08 (2010)、3.94 (2011)、4.01 (2012) であることを見れば、現在でも妥当なラインだと思われる。',
-  before_text: 'before_text',
-  created_at: '2021-10-01 00:00:00',
-  user: {
-    id: 1,
-    screen_name: 'ユーザー名',
-    profile_picture_path: 'https://picsum.photos/200/300',
-  },
-}
-
-/** @type { Comment[] } */
-const dummyComments = [
-  {
-    id: 1,
-    user_FK: 1,
-    post_FK: 1,
-    text: 'コメント',
-    created_at: '2021-10-01 00:00:00',
-    users: {
-      id: 1,
-      screen_name: 'ユーザー名1',
-      profile_picture_path: 'https://picsum.photos/200/300',
-    },
-  },
-  {
-    id: 2,
-    user_FK: 1,
-    post_FK: 1,
-    text: 'コメント2',
-    created_at: '2021-10-01 00:00:00',
-    users: {
-      id: 1,
-      screen_name: 'ユーザー名2',
-      profile_picture_path: 'https://picsum.photos/300/300',
-    },
-  },
-  {
-    id: 3,
-    user_FK: 1,
-    post_FK: 1,
-    text: 'コメント3',
-    created_at: '2021-10-01 00:00:00',
-    users: {
-      id: 1,
-      screen_name: 'ユーザー名3',
-      profile_picture_path: 'https://picsum.photos/200/400',
-    },
-  },
-]
-
 const Comment = () => {
   const { postId } = useParams()
-  const [post, setPost] = useState(null)
+  const [post, setPost] = useState({})
+  const [open, setOpen] = useState(false)
+  const [comment, setComment] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  const { user } = useAuthContext()
+
+  const fetchComments = () => {
+    api.get(`/posts/${postId}/comments`).then((res) => {
+      /** @type { PostResponse } */
+      const data = res.data
+      if (!data) return
+      setPost(data)
+    })
+  }
 
   useEffect(() => {
-    // TODO: postIdを使ってコメントを取得する
-    setPost(duymmyPost)
-  }, [postId])
+    fetchComments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const sendComment = () => {
+    setIsLoading(true)
+    axios
+      .post(
+        `${import.meta.env.VITE_API_URL}/comments`,
+        {
+          post_fk: postId,
+          text: comment.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'),
+          screen_name: 'string',
+          profile_picture_path: 'string',
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res)
+        setComment('')
+        setOpen(false)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        fetchComments()
+      })
+  }
 
   return (
     <>
@@ -107,25 +118,90 @@ const Comment = () => {
         <IconButton sx={{ mt: 1, ml: 1 }} onClick={() => navigate('/')}>
           <ArrowBackIcon />
         </IconButton>
-        <PostCard post={duymmyPost} sx={{ my: 1 }} />
+        {post && <PostCard post={post} sx={{ my: 1 }} />}
+        {user && (
+          <Box
+            sx={{
+              boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+              mx: { xs: 1, sm: 'auto' },
+              my: 1,
+              borderRadius: '5px',
+            }}>
+            <Accordion expanded={open}>
+              <AccordionSummary
+                sx={{
+                  '.MuiAccordionSummary-content': { my: 0, mx: 0 },
+                  '.MuiAccordionSummary-content.Mui-expanded': { my: 0 },
+                }}>
+                <Button
+                  variant="text"
+                  sx={{ width: '100%', color: 'primary', fontSize: 20 }}
+                  onClick={() => setOpen(!open)}>
+                  コメントする
+                  <ExpandMoreIcon sx={{ rotate: open && '180deg' }} />
+                </Button>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box>
+                  <TextField
+                    sx={{ width: '100%', mt: 1 }}
+                    label="コメント"
+                    multiline
+                    maxRows={4}
+                    variant="outlined"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <Box sx={{ textAlign: 'right', mt: 1 }}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setOpen(false)}
+                      sx={{ borderRadius: 6 }}>
+                      キャンセル
+                    </Button>
+                    <Button
+                      variant="contained"
+                      sx={{ ml: 1, borderRadius: 6 }}
+                      onClick={() => sendComment()}
+                      disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          投稿中
+                          <CircularProgress
+                            color="grayText"
+                            size={24}
+                            sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+                          />
+                        </>
+                      ) : (
+                        'コメント'
+                      )}
+                    </Button>
+                  </Box>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+        )}
         <Box
           sx={{
             boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
             mx: { xs: 1, sm: 'auto' },
             my: 1,
-            borderRadius: 5,
+            borderRadius: '5px',
           }}>
-          {dummyComments.map((comment, idx) => {
-            let sx = {}
-            if (idx === 0) sx['borderRadius'] = '5px 5px 0 0'
-            if (idx === dummyComments.length - 1) sx['borderRadius'] = '0 0 5px 5px'
-            return (
-              <Box key={comment.id}>
-                <CommentCard comment={comment} sx={sx} />
-                {idx !== dummyComments.length - 1 && <Divider />}
-              </Box>
-            )
-          })}
+          {post.comments &&
+            post.comments.map((comment, idx) => {
+              let sx = {}
+              if (idx === 0) sx['borderRadius'] = '5px 5px 0 0'
+              if (idx === post.comments.length - 1) sx['borderRadius'] = '0 0 5px 5px'
+              return (
+                <Box key={comment.id}>
+                  <CommentCard comment={comment} sx={sx} />
+                  {idx !== post.comments.length - 1 && <Divider />}
+                </Box>
+              )
+            })}
         </Box>
       </Box>
     </>

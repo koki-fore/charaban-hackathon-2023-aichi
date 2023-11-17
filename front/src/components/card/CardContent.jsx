@@ -29,7 +29,7 @@ export const PostCardContent = ({ /** @type {Post} */ post, sx, className, setCh
           alignItems="center"
           sx={{ height: { xs: 250, sm: 400 }, width: { xs: '90%', sm: 500 }, mx: 'auto' }}>
           <img
-            src={post.picture_path}
+            src={post && post.picture_path}
             alt="image"
             style={{
               height: '100%',
@@ -39,9 +39,9 @@ export const PostCardContent = ({ /** @type {Post} */ post, sx, className, setCh
             }}
           />
         </Stack>
-        <Box>
+        <Box sx={{ my: 1 }}>
           <Typography sx={{ overflowWrap: 'normal', wordBreak: 'break-word', mx: 3 }}>
-            {parse(post.text)}
+            {post.text && parse(post.text)}
           </Typography>
         </Box>
       </Stack>

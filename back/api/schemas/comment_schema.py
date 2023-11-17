@@ -19,5 +19,5 @@ class Comment(CommentCreate):
 	updated_at: datetime
 
 class CommentWithUser(Comment):
-	user: User
+	users: User
  

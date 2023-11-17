@@ -28,7 +28,7 @@ const Top = () => {
   const [posts, setPosts] = useState([])
   const { user } = useAuthContext()
 
-  useEffect(() => {
+  const fetchPosts = () => {
     api
       .get('/posts')
       .then((res) => {
@@ -41,6 +41,10 @@ const Top = () => {
       .catch((e) => {
         console.log(e)
       })
+  }
+
+  useEffect(() => {
+    fetchPosts()
   }, [])
 
   return (
@@ -51,7 +55,7 @@ const Top = () => {
       ))}
       {user && (
         <>
-          <PostCreateModal open={open} closeModal={() => setOpen(false)} />
+          <PostCreateModal open={open} closeModal={() => setOpen(false)} fetchPosts={fetchPosts} />
           <Fab
             color="primary"
             size="small"
