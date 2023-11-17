@@ -1,4 +1,4 @@
-import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
+import { Container, Box, Avatar, TextField, Button, Link, CircularProgress } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { Link as routerLink } from 'react-router-dom'
 import { auth, provider } from '../firebase'
@@ -15,7 +15,8 @@ import { api } from '../util/axios'
 
 const SignUp = () => {
   const [showAlert, setShowAlert] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(false)
+  const [isSignUp, setIsSignUp] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -26,6 +27,7 @@ const SignUp = () => {
   } = useForm()
 
   const onSubmit = (event) => {
+    setIsLoading(true)
     createUserWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
         const user = userCredential.user
@@ -40,14 +42,18 @@ const SignUp = () => {
           .then((res) => {
             console.log(res)
             setIsSignUp(true)
+            setIsLoading(false)
           })
           .catch((error) => {
             console.log(error)
+            setShowAlert(true)
+            setIsLoading(false)
           })
       })
       .catch((error) => {
         console.log(error)
         setShowAlert(true)
+        setIsLoading(false)
       })
   }
 
@@ -202,6 +208,7 @@ const SignUp = () => {
               <Button
                 type="submit"
                 variant="contained"
+                disabled={isLoading}
                 sx={{
                   width: 150,
                   borderRadius: 5,
@@ -210,7 +217,18 @@ const SignUp = () => {
                   mt: 3,
                   mb: 2,
                 }}>
-                新規登録
+                {isLoading ? (
+                  <>
+                    新規登録中
+                    <CircularProgress
+                      color="grayText"
+                      size={24}
+                      sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+                    />
+                  </>
+                ) : (
+                  '新規登録'
+                )}
               </Button>
               <Button
                 onClick={googleSignUp}

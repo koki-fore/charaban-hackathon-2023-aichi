@@ -1,14 +1,10 @@
-import { Container, Box, Avatar, TextField, Button, Link } from '@mui/material'
+import { Container, Box, Avatar, TextField, Button, Link, CircularProgress } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '../firebase'
 import { Link as routerLink } from 'react-router-dom'
 import { useState } from 'react'
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from 'firebase/auth'
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import googleSignInImage from '../assets/google/google_sign_in.png'
 import { useForm } from 'react-hook-form'
 import CloseIcon from '@mui/icons-material/Close'
@@ -20,6 +16,7 @@ const Login = () => {
   const navigate = useNavigate('')
 
   const [showAlert, setShowAlert] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -28,17 +25,20 @@ const Login = () => {
   } = useForm()
 
   const onSubmit = (event) => {
+    setIsLoading(true)
     signInWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user
         navigate('/')
+        setIsLoading(false)
       })
       .catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
         console.log(errorCode)
         console.log(errorMessage)
+        setIsLoading(false)
         setShowAlert(true)
       })
   }
@@ -125,7 +125,7 @@ const Login = () => {
                         <CloseIcon fontSize="inherit" />
                       </IconButton>
                     }
-                    sx={{ mb: 2, borderRadius:6 }}>
+                    sx={{ mb: 2, borderRadius: 6 }}>
                     メールアドレスかパスワードに誤りがあります
                   </Alert>
                 </Collapse>
@@ -134,10 +134,23 @@ const Login = () => {
             <Button
               type="submit"
               variant="contained"
+              disabled={isLoading}
               sx={{ width: 150, borderRadius: 5, display: 'flex', margin: '0 auto', mt: 3, mb: 2 }}>
-              ログイン
+              {isLoading ? (
+                <>
+                  ログイン中
+                  <CircularProgress
+                    color="grayText"
+                    size={24}
+                    sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+                  />
+                </>
+              ) : (
+                'ログイン'
+              )}
             </Button>
             <Button
+              disabled={isLoading}
               onClick={googleLogin}
               sx={{ borderRadius: 5, display: 'flex', margin: '0 auto' }}
               style={{ padding: 0 }}>
