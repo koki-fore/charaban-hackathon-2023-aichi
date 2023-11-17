@@ -29,7 +29,7 @@ def get_post_with_comments(
     post_id: int, 
     db: Session = Depends(db_session)
     ):
-    post = posts_cruds.get_post(db, post_id)
+    post = posts_cruds.get_post_with_comments(db, post_id)
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
     return post

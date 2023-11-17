@@ -31,7 +31,7 @@ def get_post(
 def get_post_with_comments(
     db: Session,
     post_id: int
-    ) -> posts_schema.PostWithComment:
+    ):
     return db.query(db_models.Post).filter(db_models.Post.id == post_id).first()
 
 def get_recommended_posts():
