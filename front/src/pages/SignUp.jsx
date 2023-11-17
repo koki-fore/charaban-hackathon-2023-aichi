@@ -15,7 +15,7 @@ import { api } from '../util/axios'
 
 const SignUp = () => {
   const [showAlert, setShowAlert] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(true)
+  const [isSignUp, setIsSignUp] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const {
