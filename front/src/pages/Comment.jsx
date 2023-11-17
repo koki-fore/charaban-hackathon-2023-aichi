@@ -153,12 +153,15 @@ const Comment = () => {
                     onChange={(e) => setComment(e.target.value)}
                   />
                   <Box sx={{ textAlign: 'right', mt: 1 }}>
-                    <Button variant="outlined" onClick={() => setOpen(false)}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setOpen(false)}
+                      sx={{ borderRadius: 6 }}>
                       キャンセル
                     </Button>
                     <Button
                       variant="contained"
-                      sx={{ ml: 1 }}
+                      sx={{ ml: 1, borderRadius: 6 }}
                       onClick={() => sendComment()}
                       disabled={isLoading}>
                       {isLoading ? (
