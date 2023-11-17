@@ -1,14 +1,18 @@
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
-import { Box, TextField, Button, Typography, Modal } from '@mui/material'
+import { Box, TextField, Button, Typography, Modal, CircularProgress } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { getStorage, ref, uploadString, getDownloadURL, uploadBytes } from 'firebase/storage'
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'
 import '../styles/AccountRegister.css'
-import ReactCrop, { centerCrop, makeAspectCrop, convertToPixelCrop } from 'react-image-crop'
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import dayjs from 'dayjs'
 import { useAuthContext } from '../context/AuthContext'
+import CloseIcon from '@mui/icons-material/Close'
+import IconButton from '@mui/material/IconButton'
+import Collapse from '@mui/material/Collapse'
+import Alert from '@mui/material/Alert'
 
 const style = {
   position: 'absolute',
@@ -32,9 +36,11 @@ const AccountRegister = () => {
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage()
 
+  const [isLoading, setIsLoading] = useState(false)
   const [completedCrop, setCompletedCrop] = useState(null)
   const [crop, setCrop] = useState()
   const [open, setOpen] = useState(false)
+  const [showAlert, setShowAlert] = useState(false)
   const imgRef = useRef(null)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -62,6 +68,7 @@ const AccountRegister = () => {
   } = useForm()
 
   const submit = (data) => {
+    setIsLoading(true)
     const profilePictureRef = ref(storage, 'users/' + timestamp + fileName)
     uploadString(profilePictureRef, profileImage.split(',')[1], 'base64').then(() => {
       // complete updated
@@ -76,13 +83,18 @@ const AccountRegister = () => {
             })
             .then(() => {
               navigate('/')
+              setIsLoading(false)
             })
             .catch((e) => {
               console.error(e)
+              setIsLoading(false)
+              setShowAlert(true)
             })
         })
         .catch((e) => {
           console.error(e)
+          setIsLoading(false)
+          setShowAlert(true)
         })
     })
   }
@@ -202,12 +214,46 @@ const AccountRegister = () => {
           label="ユーザーネーム"
           name="screen_name"
         />
+        {showAlert && (
+          <Box sx={{ width: '100%' }}>
+            <Collapse in={showAlert}>
+              <Alert
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setShowAlert(false)
+                    }}>
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{ mb: 2, borderRadius: 6 }}>
+                プロフィール登録に失敗しました
+              </Alert>
+            </Collapse>
+          </Box>
+        )}
         <Button
           type="submit"
           variant="contained"
           color="primary"
+          disabled={isLoading}
           sx={{ width: 200, borderRadius: 5, display: 'flex', margin: '0 auto', marginY: 4 }}>
-          プロフィール登録
+          {isLoading ? (
+            <>
+              プロフィール登録中
+              <CircularProgress
+                color="grayText"
+                size={24}
+                sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+              />
+            </>
+          ) : (
+            'プロフィール登録'
+          )}
         </Button>
       </form>
     </Box>
