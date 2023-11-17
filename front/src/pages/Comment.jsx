@@ -1,8 +1,19 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Header, PostCard, CommentCard } from '../components'
 import { useEffect, useState } from 'react'
-import { Box, Divider, IconButton } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  Button,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { useAuthContext } from '../context/AuthContext'
 
 /**
  * @typedef {Object} User
@@ -104,12 +115,19 @@ const duymmyPost = {
 const Comment = () => {
   const { postId } = useParams()
   const [post, setPost] = useState({})
+  const [open, setOpen] = useState(false)
+  const [comment, setComment] = useState('')
   const navigate = useNavigate()
+  const { user } = useAuthContext()
 
   useEffect(() => {
     // TODO: postIdを使ってコメントを取得する
     setPost(duymmyPost)
   }, [postId])
+
+  const sendComment = () => {
+    console.log('コメントを送信', comment.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'))
+  }
 
   return (
     <>
@@ -119,12 +137,58 @@ const Comment = () => {
           <ArrowBackIcon />
         </IconButton>
         <PostCard post={duymmyPost} sx={{ my: 1 }} />
+        {user && (
+          <Box
+            sx={{
+              boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
+              mx: { xs: 1, sm: 'auto' },
+              my: 1,
+              borderRadius: '5px',
+            }}>
+            <Accordion expanded={open}>
+              <AccordionSummary
+                sx={{
+                  '.MuiAccordionSummary-content': { my: 0, mx: 0 },
+                  '.MuiAccordionSummary-content.Mui-expanded': { my: 0 },
+                }}>
+                <Button
+                  variant="text"
+                  sx={{ width: '100%', color: 'primary', fontSize: 20 }}
+                  onClick={() => setOpen(!open)}>
+                  コメントする
+                  <ExpandMoreIcon sx={{ rotate: open && '180deg' }} />
+                </Button>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Box>
+                  <TextField
+                    sx={{ width: '100%', mt: 1 }}
+                    label="コメント"
+                    multiline
+                    maxRows={4}
+                    variant="outlined"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <Box sx={{ textAlign: 'right', mt: 1 }}>
+                    <Button variant="outlined" onClick={() => setOpen(false)}>
+                      キャンセル
+                    </Button>
+                    <Button variant="contained" sx={{ ml: 1 }} onClick={() => sendComment()}>
+                      コメント
+                    </Button>
+                  </Box>
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+          </Box>
+        )}
         <Box
           sx={{
             boxShadow: '0 0 15px rgba(0, 0, 0, 0.35)',
             mx: { xs: 1, sm: 'auto' },
             my: 1,
-            borderRadius: 5,
+            borderRadius: '5px',
           }}>
           {dummyComments.map((comment, idx) => {
             let sx = {}
