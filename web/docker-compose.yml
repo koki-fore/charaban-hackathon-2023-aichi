@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  frontend:
+    container_name: zengo
+    build: .
+    volumes:
+      - ../front/dist:/var/www/html
+    ports:
+      - "80:80"
