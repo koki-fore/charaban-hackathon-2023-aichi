@@ -13,11 +13,29 @@ import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
 import { Link as routerLink, useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
+import axios from 'axios'
 import { useAuthContext } from '../context/AuthContext'
 
 export const Header = ({ sx }) => {
   const navigate = useNavigate()
   const { user } = useAuthContext()
+  const [userInfo, setUserInfo] = React.useState()
+  const URL = import.meta.env.VITE_API_URL
+
+  React.useEffect(() => {
+    if (!user) return
+    console.log('axios')
+    console.log(user.accessToken)
+    axios
+      .get(URL + '/users/me', { headers: { Authorization: 'Bearer ' + user.accessToken } })
+      .then((res) => {
+        console.log(res)
+        setUserInfo(res.data)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }, [user])
 
   const [anchorElUser, setAnchorElUser] = React.useState(null)
 
@@ -45,7 +63,7 @@ export const Header = ({ sx }) => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Avatar" src={userInfo ? userInfo.profile_picture_path : ''} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -63,7 +81,12 @@ export const Header = ({ sx }) => {
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}>
-                <MenuItem key="Profile" onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key="Profile"
+                  onClick={() => {
+                    handleCloseUserMenu()
+                    navigate('/user-profile')
+                  }}>
                   <Typography textAlign="center">Profile</Typography>
                 </MenuItem>
                 <MenuItem

@@ -18,6 +18,15 @@ def get_users_all(db: Session = Depends(db_session)):
     users = get_users(db)
     return users
 
+@router.get("/users/me", response_model=User)
+def get_me(db: Session = Depends(db_session), user = Depends(auth_user)):
+    return user
+
+@router.put("/users/me", response_model=User)
+def update_me(update_data: UserUpdate, db: Session=Depends(db_session), user = Depends(auth_user)):
+    updated_user = update_user(db, update_data, user)
+    return updated_user
+
 @router.get("/users/{id}", response_model=User)
 def get_user_by_id(id: int, db: Session = Depends(db_session)):
     user = get_user_by_primary(db, id)
@@ -29,11 +38,3 @@ def delete_user_by_id(id: int, db: Session = Depends(db_session)):
     _ = delete_user(db, user)
     return
 
-@router.get("/users/me", response_model=User)
-def get_me(db: Session = Depends(db_session), user = Depends(auth_user)):
-    return user
-
-@router.put("/users/me", response_model=User)
-def update_me(update_data: UserUpdate, db: Session=Depends(db_session), user = Depends(auth_user)):
-    updated_user = update_user(db, update_data, user)
-    return updated_user
