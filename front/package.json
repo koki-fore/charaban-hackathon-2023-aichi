@@ -18,10 +18,12 @@
     "browser-image-compression": "^2.0.2",
     "dayjs": "^1.11.10",
     "firebase": "^10.6.0",
+    "html-react-parser": "^5.0.6",
     "mui-file-input": "^3.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
+    "react-image-crop": "^10.1.8",
     "react-router-dom": "^6.18.0"
   },
   "devDependencies": {

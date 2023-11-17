@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-# from .auth import auth_user
+from utils.auth import auth_user
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -19,10 +19,10 @@ def list_posts(
 @router.post("/posts", response_model=posts_schemas.PostCreate)
 def create_post(
     post_body: posts_schemas.PostCreate,
-    # uid: int = Depends(auth_user),
-    db: Session = Depends(db_session)
+    db: Session = Depends(db_session),
+    user = Depends(auth_user),
     ):
-    return posts_cruds.create_post(db, post_body)
+    return posts_cruds.create_post(db, post_body, user.id)
 
 @router.get("/posts/{post_id}/comments", response_model=posts_schemas.PostWithComment)
 def get_post_with_comments(

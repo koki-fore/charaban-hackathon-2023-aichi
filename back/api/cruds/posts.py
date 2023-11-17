@@ -7,9 +7,11 @@ import schemas.post_schema as posts_schema
 
 def create_post(
     db: Session,
-    post_create: posts_schema.PostCreate
+    post_create: posts_schema.PostCreate,
+    user_id: int,
     ) -> db_models.Post:
     post = db_models.Post(**post_create.model_dump())
+    post.user_fk = user_id
     db.add(post)
     db.commit()
     db.refresh(post)
@@ -18,7 +20,7 @@ def create_post(
 def get_all_posts(
     db: Session
     ) -> List[posts_schema.Post]:
-    return db.query(db_models.Post).filter(db_models.Post.is_deleted == False).all()
+    return db.query(db_models.Post).filter(db_models.Post.is_deleted == False).order_by(db_models.Post.created_at.desc()).all()
 
 def get_post(
     db: Session,

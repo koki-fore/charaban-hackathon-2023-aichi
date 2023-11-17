@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
  * @property {number} post_FK
  * @property {string} text
  * @property {string} created_at
- * @property {User} user
+ * @property {User} users
  */
 
 /**
@@ -38,15 +38,15 @@ export const CommentCard = ({ sx, /** @type {Comment} */ comment }) => {
               <Grid item>
                 <IconButton onClick={handleNavigateToProfile} sx={{ p: 0 }}>
                   <Avatar
-                    alt={comment.user.screen_name}
-                    src={comment.user.profile_picture_path}
+                    alt={comment.users.screen_name}
+                    src={comment.users.profile_picture_path}
                     sx={{ width: 30, height: 30 }}
                   />
                 </IconButton>
               </Grid>
               <Grid item>
                 <Typography className="post-card-header__user-name" sx={{ fontSize: 16 }}>
-                  {comment.user.screen_name}
+                  {comment.users.screen_name}
                 </Typography>
               </Grid>
             </Grid>

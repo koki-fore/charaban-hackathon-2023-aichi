@@ -7,11 +7,14 @@ import {
   Stack,
   TextField,
   Typography,
+  CircularProgress,
 } from '@mui/material'
 import { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import imageCompression from 'browser-image-compression'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { useAuthContext } from '../context/AuthContext'
+import dayjs from 'dayjs'
 
 const style = {
   position: 'absolute',
@@ -38,12 +41,13 @@ const selectedStyle = {
 }
 
 export const PostCreateModal = ({ open, closeModal, sx, className }) => {
+  const { authApi } = useAuthContext()
   const [editState, setEditState] = useState('before')
   const [beforeImage, setBeforeImage] = useState(null)
   const [afterImage, setAfterImage] = useState(null)
-  const [beforeDownloadUrl, setBeforeDownloadUrl] = useState('')
-  const [afterDownloadUrl, setAfterDownloadUrl] = useState('')
   const { register, handleSubmit, reset } = useForm()
+  const [isLoading, setIsLoading] = useState(false)
+  const timestamp = dayjs().format('YYMMDDHHmmss')
 
   const toggleEdit = (e) => {
     setEditState(e.target.value)
@@ -52,27 +56,42 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
   // Get a reference to the storage service, which is used to create references in your storage bucket
   const storage = getStorage()
 
-  // Create a storage reference from our storage service
-  const postsRef = ref(storage, 'posts')
-
-  const getUploadBytes = async (beforePictureRef, beforeImage, suffix) => {
-    await uploadBytes(beforePictureRef, beforeImage)
-    return getDownloadURL(beforePictureRef, 'posts/' + beforePictureRef.name + suffix)
+  const getUploadBytes = async (pictureRef, image, suffix) => {
+    await uploadBytes(pictureRef, image)
+    return getDownloadURL(pictureRef, 'posts/' + timestamp + pictureRef.name + suffix)
   }
 
   const onSubmit = (data) => {
-    console.log(data)
+    setIsLoading(true)
+    data = {
+      ...data,
+      before_text: data.before_text.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'),
+      after_text: data.after_text.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp;'),
+    }
     // Child references can also take paths delimited by '/'
-    const beforePictureRef = ref(storage, 'posts/' + beforeImage.name + '.before')
-    const afterPictureRef = ref(storage, 'posts/' + afterImage.name + '.after')
+    const beforePictureRef = ref(storage, 'posts/' + timestamp + beforeImage.name + '.before')
+    const afterPictureRef = ref(storage, 'posts/' + timestamp + afterImage.name + '.after')
     // Promise.allを使って並行処理と同期処理を同時に行う
     Promise.all([
       getUploadBytes(beforePictureRef, beforeImage, '.before'),
       getUploadBytes(afterPictureRef, afterImage, '.after'),
-    ]).then(([beforeUrl, afterUrl]) => {
-      console.log(beforeUrl, afterUrl)
-      // TODO: axiosでPosts
-    })
+    ])
+      .then(([beforeUrl, afterUrl]) => {
+        console.log(beforeUrl, afterUrl)
+        console.log(data)
+        return authApi.post('/posts', {
+          ...data,
+          before_picture_path: beforeUrl,
+          after_picture_path: afterUrl,
+        })
+      })
+      .then((res) => {
+        console.log(res)
+        closeModal()
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   const handleClose = () => {
@@ -115,8 +134,19 @@ export const PostCreateModal = ({ open, closeModal, sx, className }) => {
             <Button type="button" variant="outlined" onClick={handleClose}>
               キャンセル
             </Button>
-            <Button type="submit" variant="contained" sx={{ ml: 2 }}>
-              投稿
+            <Button type="submit" variant="contained" sx={{ ml: 2 }} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  投稿中
+                  <CircularProgress
+                    color="grayText"
+                    size={24}
+                    sx={{ position: 'absolute', inset: 0, margin: 'auto' }}
+                  />
+                </>
+              ) : (
+                '投稿'
+              )}
             </Button>
           </Box>
         </form>
