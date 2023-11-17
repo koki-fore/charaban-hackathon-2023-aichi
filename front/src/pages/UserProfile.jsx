@@ -1,13 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Box, Container, Button, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useAuthContext } from '../context/AuthContext'
 
 const UserProfile = () => {
     const navigate = useNavigate()
-    
+    const { authApi } = useAuthContext()
+    const [userInfo, setUserInfo] = useState()
+
     useEffect(() => {
-        // axiosでユーザーの情報を取得し、状態変数accountInfoに入れる
-        
+        const fetchUser = () => {
+            authApi.get("/users/me").
+            then( (user) => {
+                setUserInfo(user)
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+        fetchUser()
     }, [])
 
     return (
@@ -15,7 +25,8 @@ const UserProfile = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Box
                     component='img'
-                    // src={}
+                    // src={userInfo.profile_picture_path}
+                    src=''
                     alt="プロフィール画像"
                     sx={{width: '50%'}}
                 />
@@ -32,9 +43,9 @@ const UserProfile = () => {
                 </Box>
             </Box>
             <Typography variant='body1'>ユーザー名：</Typography>
-            {/* <Typography variant='h6'>{accountInfo.username}</Typography> */}
+            <Typography variant='h6'>{userInfo.screen_name}</Typography>
             <Typography variant='body1'>自己紹介：</Typography>
-            {/* <Typography variant='h6'>{accountInfo.introduction}</Typography> */}
+            <Typography variant='h6'>{userInfo.description}</Typography>
         </Container>
     )
 }
