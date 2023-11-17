@@ -39,7 +39,7 @@ export const PostCardContent = ({ /** @type {Post} */ post, sx, className, setCh
             }}
           />
         </Stack>
-        <Box>
+        <Box sx={{ my: 1 }}>
           <Typography sx={{ overflowWrap: 'normal', wordBreak: 'break-word', mx: 3 }}>
             {parse(post.text)}
           </Typography>
