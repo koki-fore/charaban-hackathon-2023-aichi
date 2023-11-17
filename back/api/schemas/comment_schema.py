@@ -4,7 +4,6 @@ from .user_schema import User
 from typing import List
 
 class CommentCreate(BaseModel):
-	user_fk: int
 	post_fk: int
 	text: str
 	screen_name: str
@@ -15,6 +14,7 @@ class CommentUpdate():
 
 class Comment(CommentCreate):
 	id: int
+	user_fk: int
 	created_at: datetime
 	updated_at: datetime
 
