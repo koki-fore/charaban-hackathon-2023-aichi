@@ -20,4 +20,3 @@ class Comment(CommentCreate):
 
 class CommentWithUser(Comment):
 	user: User
- 

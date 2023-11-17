@@ -8,7 +8,7 @@ def create_like(
     db: Session,
     like_create: likes_schema.LikeCreate
     ) -> db_models.Like:
-    like = db_models.Like(**like_create.model_dump())
+    like = db_models.Like(**like_create)
     if db.query(db_models.Like).filter(db_models.Like.post_fk == like_create.post_fk).filter(db_models.Like.user_fk == like_create.user_fk).first():
         return "Like already exists"
     db.add(like)
