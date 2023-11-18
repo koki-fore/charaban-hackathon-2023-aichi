@@ -36,10 +36,9 @@ const Top = () => {
         const data = res.data
         if (!data || data.length === 0) return
         setPosts(data)
-        console.log(data)
       })
       .catch((e) => {
-        console.log(e)
+        console.error(e)
       })
   }
 

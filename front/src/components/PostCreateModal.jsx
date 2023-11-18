@@ -77,16 +77,14 @@ export const PostCreateModal = ({ open, closeModal, sx, className, fetchPosts })
       getUploadBytes(afterPictureRef, afterImage, '.after'),
     ])
       .then(([beforeUrl, afterUrl]) => {
-        console.log(beforeUrl, afterUrl)
-        console.log(data)
+        console.info('imageurl', beforeUrl, afterUrl)
         return authApi.post('/posts', {
           ...data,
           before_picture_path: beforeUrl,
           after_picture_path: afterUrl,
         })
       })
-      .then((res) => {
-        console.log(res)
+      .then(() => {
         closeModal()
       })
       .finally(() => {
@@ -167,7 +165,6 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
   const handleChangeImage = async (e) => {
     setIsLoading(true)
     const file = e.target.files[0]
-    console.log('file', file)
     const options = {
       maxSizeMB: 1,
       useWebWorker: true,
@@ -182,7 +179,7 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
       fileRader.readAsDataURL(compressedFile)
       setIsLoading(false)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 

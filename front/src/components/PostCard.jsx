@@ -64,7 +64,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
       calcHeight(Array.from(backChildRef?.current?.children)) + 32,
     )
     setContentHeight(height)
-  }, [frontChildRef, backChildRef])
+  }, [frontChildRef, backChildRef, post])
 
   const calcHeight = (children) => {
     const style = window.getComputedStyle(children[1])

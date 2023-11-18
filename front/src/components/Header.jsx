@@ -24,16 +24,14 @@ export const Header = ({ sx }) => {
 
   React.useEffect(() => {
     if (!user) return
-    console.log('axios')
-    console.log(user.accessToken)
+    console.info('access Token', user.accessToken)
     axios
       .get(URL + '/users/me', { headers: { Authorization: 'Bearer ' + user.accessToken } })
       .then((res) => {
-        console.log(res)
         setUserInfo(res.data)
       })
       .catch((e) => {
-        console.log(e)
+        console.error(e)
       })
   }, [user])
 
@@ -86,7 +84,7 @@ export const Header = ({ sx }) => {
                   key="Profile"
                   onClick={() => {
                     handleCloseUserMenu()
-                    navigate('/user-profile')
+                    navigate('/update-account')
                   }}>
                   <Typography textAlign="center">Profile</Typography>
                 </MenuItem>
