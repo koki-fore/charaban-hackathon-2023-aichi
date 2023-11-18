@@ -1,5 +1,6 @@
 import { IconButton, Avatar, Box, Typography, Grid } from '@mui/material'
 import dayjs from 'dayjs'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * @typedef {Object} User
@@ -9,16 +10,13 @@ import dayjs from 'dayjs'
  */
 
 export const PostCardHeader = ({ /** @type {User} */ user, datetime, sx }) => {
-  // TODO:ユーザーのプロフィールに移動
-  const handleNavigateToProfile = () => {
-    console.log('navigate to profile')
-  }
+  const navigate = useNavigate()
   return (
     <Box sx={sx}>
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid container item xs="auto" spacing={2} alignItems="center">
           <Grid item>
-            <IconButton onClick={handleNavigateToProfile} sx={{ p: 0 }}>
+            <IconButton onClick={() => navigate(`/user-profile/${user.id}`)} sx={{ p: 0 }}>
               <Avatar
                 alt="avatar"
                 src={user && user.profile_picture_path}
