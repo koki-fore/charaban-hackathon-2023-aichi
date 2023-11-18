@@ -2,6 +2,8 @@ import '../styles/PostCard.css'
 import { PostCardHeader, PostCardContent, PostCardFooter } from './card'
 import { Box, Stack } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+import { useAuthContext } from '../context/AuthContext'
+import axios from 'axios'
 
 /**
  * @typedef {Object} User
@@ -40,15 +42,51 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
   const [contentHeight, setContentHeight] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [numLiked, setNumLiked] = useState(0)
+  const { user } = useAuthContext()
 
   const handleLike = () => {
-    // TODO: APIを投げてresponseをセットする
-    if (isLiked) {
-      setIsLiked(false)
-      setNumLiked(0)
+    if (!user) return
+    if (!post) return
+    if (!isLiked) {
+      axios
+        .post(
+          `${import.meta.env.VITE_API_URL}/likes`,
+          {
+            post_fk: post.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          },
+        )
+        .then(() => {
+          setIsLiked(true)
+          setNumLiked((prev) => prev + 1)
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     } else {
-      setIsLiked(true)
-      setNumLiked(1)
+      axios
+        .delete(
+          `${import.meta.env.VITE_API_URL}/likes`,
+          {
+            post_fk: post.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          },
+        )
+        .then(() => {
+          setIsLiked(false)
+          setNumLiked((prev) => prev - 1)
+        })
+        .catch((e) => {
+          console.error(e)
+        })
     }
   }
 

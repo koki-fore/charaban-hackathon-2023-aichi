@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from utils.auth import auth_user
 
 import cruds.likes as likes_cruds
 import schemas.like_schema as likes_schema
@@ -10,10 +11,11 @@ router = APIRouter()
 
 @router.post("/likes", response_model=likes_schema.Like)
 def create_like(
-    like_body: likes_schema.LikeCreate,
-    db: Session = Depends(db_session)
+    like: likes_schema.LikeCreate,
+    db: Session = Depends(db_session),
+    user = Depends(auth_user)
     ):
-    like = likes_cruds.create_like(db, like_body)
+    like = likes_cruds.create_like(db, post_id=like.post_fk, user_id=user.id)
     if like == "Like already exists":
         raise HTTPException(status_code=400, detail="Like already exists")
     return like
@@ -24,12 +26,13 @@ def list_likes(
     ) -> List[likes_schema.Like]:
     return likes_cruds.get_all_likes(db)
 
-@router.delete("/likes/{like_id}")
+@router.delete("/likes")
 def delete_like(
-    like_id: int,
+    like: likes_schema.LikeCreate,
+    user = Depends(auth_user),
     db: Session = Depends(db_session)
     ) -> likes_schema.Like:
-    return likes_cruds.delete_like(db, like_id)
+    return likes_cruds.delete_like(db, post_id=like.post_fk, user_id=user.id)
 
 @router.get("/likes-count/{post_id}")
 def get_likes_count(

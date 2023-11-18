@@ -6,10 +6,14 @@ import schemas.like_schema as likes_schema
 
 def create_like(
     db: Session,
-    like_create: likes_schema.LikeCreate
+    post_id: int,
+    user_id: int
     ) -> db_models.Like:
-    like = db_models.Like(**like_create.model_dump())
-    if db.query(db_models.Like).filter(db_models.Like.post_fk == like_create.post_fk).filter(db_models.Like.user_fk == like_create.user_fk).first():
+    like = db_models.Like(
+        post_fk=post_id,
+        user_fk=user_id
+    )
+    if db.query(db_models.Like).filter(db_models.Like.post_fk == post_id).filter(db_models.Like.user_fk == user_id).first():
         return "Like already exists"
     db.add(like)
     db.commit()
@@ -24,9 +28,10 @@ def get_all_likes(
 
 def delete_like(
     db: Session,
-    like_id: int
+    post_id: int,
+    user_id: int
     ) -> db_models.Like:
-    like = db.query(db_models.Like).filter(db_models.Like.id == like_id).first()
+    like = db.query(db_models.Like).filter(db_models.Like.user_fk == user_id, db_models.Like.post_fk == post_id).first()
     db.delete(like)
     db.commit()
     return like
