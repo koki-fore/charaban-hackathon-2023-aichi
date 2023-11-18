@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { Grid, IconButton, Avatar, Typography, Stack } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-
 /**
  * @typedef {Object} Comment
  * @property {number} id
@@ -20,9 +20,7 @@ import dayjs from 'dayjs'
  */
 
 export const CommentCard = ({ sx, /** @type {Comment} */ comment }) => {
-  const handleNavigateToProfile = () => {
-    console.log('navigate to profile')
-  }
+  const navigate = useNavigate()
   return (
     <>
       <Stack
@@ -36,7 +34,9 @@ export const CommentCard = ({ sx, /** @type {Comment} */ comment }) => {
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid container item xs="auto" spacing={2} alignItems="center">
               <Grid item>
-                <IconButton onClick={handleNavigateToProfile} sx={{ p: 0 }}>
+                <IconButton
+                  onClick={() => navigate(`/user-profile/${comment.user_FK}`)}
+                  sx={{ p: 0 }}>
                   <Avatar
                     alt={comment.users.screen_name}
                     src={comment.users.profile_picture_path}
