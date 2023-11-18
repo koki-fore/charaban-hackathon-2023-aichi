@@ -104,7 +104,7 @@ export const PostCreateModal = ({ open, closeModal, sx, className, fetchPosts })
 
   return (
     <Modal open={open} onClose={handleClose} sx={sx} className={className}>
-      <Stack sx={{ ...style }}>
+      <Stack sx={{ ...style, maxHeight: '90svh', overflowY: 'auto' }}>
         <ToggleButtonGroup
           exclusive
           color="primary"
@@ -163,7 +163,9 @@ export const PostCreateModal = ({ open, closeModal, sx, className, fetchPosts })
 const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className }) => {
   const imageInput = useRef(null)
   const [imageUrl, setImageUrl] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
   const handleChangeImage = async (e) => {
+    setIsLoading(true)
     const file = e.target.files[0]
     console.log('file', file)
     const options = {
@@ -178,6 +180,7 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
         setImageUrl(fileRader.result)
       }
       fileRader.readAsDataURL(compressedFile)
+      setIsLoading(false)
     } catch (error) {
       console.log(error)
     }
@@ -196,11 +199,11 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
           label={`${beforeOrAfter}のテキスト`}
           placeholder={`${beforeOrAfter}のテキスト`}
           variant="outlined"
-          rows={6}
+          rows={4}
           sx={{ width: '100%', maxHeight: '50vh' }}
           {...register(`${beforeOrAfter}_text`)}
         />
-        {!imageUrl && (
+        {!imageUrl && !isLoading && (
           <>
             <Stack alignItems="center" sx={{ mt: 2 }}>
               <img
@@ -219,6 +222,7 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
             </Stack>
           </>
         )}
+        {isLoading && <CircularProgress color="grayText" sx={{ margin: 'auto' }} />}
         {imageUrl && (
           <Button type="button" onClick={() => imageInput.current.click()}>
             画像を変更
@@ -235,7 +239,7 @@ const ModalContentInput = ({ beforeOrAfter, register, setImage, sx, className })
         />
         <Box
           sx={{
-            height: imageUrl && { xs: 250, sm: 400 },
+            height: imageUrl && { xs: 250, sm: 300 },
             width: { xs: '90%', sm: 500 },
             mx: 'auto',
             display: 'flex',

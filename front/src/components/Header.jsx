@@ -11,7 +11,7 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import logo from '../assets/logo.png'
 import { Button } from '@mui/material'
-import { Link as routerLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
 import axios from 'axios'
 import { useAuthContext } from '../context/AuthContext'
@@ -56,8 +56,9 @@ export const Header = ({ sx }) => {
     <AppBar position="static" sx={{ ...sx, backgroundColor: 'bgSky' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <img src={logo} alt="logo" />
-
+          <RouterLink to="/">
+            <img src={logo} alt="logo" />
+          </RouterLink>
           <Box sx={{ flexGrow: 1, display: 'flex' }}></Box>
           {user ? (
             <Box sx={{ flexGrow: 0 }}>
@@ -103,14 +104,14 @@ export const Header = ({ sx }) => {
             <Box sx={{ flexGrow: 0, display: 'flex' }}>
               <Button
                 variant="contained"
-                component={routerLink}
+                component={RouterLink}
                 to="/signup"
                 sx={{ borderRadius: 5, mr: 1, width: 100 }}>
                 新規登録
               </Button>
               <Button
                 variant="text"
-                component={routerLink}
+                component={RouterLink}
                 to="/login"
                 sx={{
                   borderRadius: 5,

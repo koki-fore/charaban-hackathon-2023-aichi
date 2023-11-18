@@ -42,13 +42,13 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
   const [numLiked, setNumLiked] = useState(0)
 
   const handleLike = () => {
-    console.log('like')
     // TODO: APIを投げてresponseをセットする
     if (isLiked) {
       setIsLiked(false)
+      setNumLiked(0)
     } else {
       setIsLiked(true)
-      setNumLiked((prev) => prev + 1)
+      setNumLiked(1)
     }
   }
 
@@ -113,7 +113,7 @@ export const PostCard = ({ /** @type {PostResponse} */ post, className, sx }) =>
             }}
           />
           <Box
-            sx={{ height: contentHeight }}
+            sx={{ height: contentHeight || 400 }}
             className={`PostCard-content-wrapper ${
               postRotate && 'PostCard-content-wrapper--rotate'
             }`}>
