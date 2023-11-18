@@ -26,7 +26,7 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, po
                     position: 'absolute',
                     top: '50%',
                     left: '110%',
-                    transform: 'translate(0, -50%)',
+                    transform: 'translate(0, -25%)',
                     color: 'grayText',
                     fontSize: 14,
                   },
