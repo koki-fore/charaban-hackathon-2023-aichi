@@ -9,20 +9,14 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, po
       <Box sx={sx}>
         <Grid container justifyContent="space-around" alignItems="center">
           <Grid item>
-            <IconButton sx={{ p: 0 }}>
+            <IconButton sx={{ p: 0 }} onClick={() => navigate(`/comment/${postId}`)}>
               <Box sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}>
-                <img
-                  src="/comment.svg"
-                  alt="to comment"
-                  onClick={() => navigate(`/comment/${postId}`)}
-                  width="100%"
-                  height="100%"
-                />
+                <img src="/comment.svg" alt="to comment" width="100%" height="100%" />
               </Box>
             </IconButton>
           </Grid>
           <Grid item>
-            <IconButton sx={{ p: 0 }}>
+            <IconButton sx={{ p: 0 }} onClick={() => handleLike()}>
               <Box
                 sx={{
                   width: { xs: 20, sm: 30 },
@@ -40,7 +34,6 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, po
                 <img
                   src={isLiked ? '/stared.svg' : '/star-outline.svg'}
                   alt="like"
-                  onClick={() => handleLike()}
                   width="100%"
                   height="100%"
                 />
@@ -48,9 +41,9 @@ export const PostCardFooter = ({ toggleRotate, handleLike, isLiked, numLiked, po
             </IconButton>
           </Grid>
           <Grid item>
-            <IconButton sx={{ p: 0 }}>
+            <IconButton sx={{ p: 0 }} onClick={() => toggleRotate()}>
               <Box sx={{ width: { xs: 20, sm: 30 }, height: { xs: 20, sm: 30 } }}>
-                <img src="/Z.png" alt="rotete" onClick={() => toggleRotate()} height="100%" />
+                <img src="/Z.png" alt="rotete" height="100%" />
               </Box>
             </IconButton>
           </Grid>
