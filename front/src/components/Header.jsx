@@ -86,7 +86,7 @@ export const Header = ({ sx }) => {
                   key="Profile"
                   onClick={() => {
                     handleCloseUserMenu()
-                    navigate('/user-profile')
+                    navigate('/update-account')
                   }}>
                   <Typography textAlign="center">Profile</Typography>
                 </MenuItem>
