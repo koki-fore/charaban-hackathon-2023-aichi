@@ -26,3 +26,7 @@ class PostWithUser(Post):
 
 class PostWithComment(Post):
 	comments: List[CommentWithUser]
+
+class PostWithLikeCount(BaseModel):
+	post: Post
+	like_count: int
