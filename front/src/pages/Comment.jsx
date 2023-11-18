@@ -98,12 +98,11 @@ const Comment = () => {
         },
       )
       .then((res) => {
-        console.log(res)
         setComment('')
         setOpen(false)
       })
       .catch((e) => {
-        console.log(e)
+        console.error(e)
       })
       .finally(() => {
         setIsLoading(false)

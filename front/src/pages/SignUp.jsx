@@ -31,7 +31,6 @@ const SignUp = () => {
     createUserWithEmailAndPassword(auth, event.email, event.password)
       .then((userCredential) => {
         const user = userCredential.user
-        console.log(user)
         api
           .post('/users', {
             firebase_id: user.uid,
@@ -40,18 +39,17 @@ const SignUp = () => {
             profile_picture_path: '',
           })
           .then((res) => {
-            console.log(res)
             setIsSignUp(true)
             setIsLoading(false)
           })
           .catch((error) => {
-            console.log(error)
+            console.error(error)
             setShowAlert(true)
             setIsLoading(false)
           })
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
         setShowAlert(true)
         setIsLoading(false)
       })
@@ -66,8 +64,8 @@ const SignUp = () => {
         // The signed-in user info.
         const user = result.user
         // IdP data available using getAdditionalUserInfo(result)
-        console.log(token)
-        console.log(user)
+        console.info(token)
+        console.info(user)
 
         api
           .post('/users', {
@@ -76,12 +74,11 @@ const SignUp = () => {
             description: '',
             profile_picture_path: '',
           })
-          .then((res) => {
-            console.log(res)
+          .then(() => {
             setIsSignUp(true)
           })
           .catch((error) => {
-            console.log(error)
+            console.error(error)
           })
       })
       .catch((error) => {
@@ -93,10 +90,10 @@ const SignUp = () => {
         // The AuthCredential type that was used.
         const credential = GoogleAuthProvider.credentialFromError(error)
 
-        console.log(errorCode)
-        console.log(errorMessage)
-        console.log(email)
-        console.log(credential)
+        console.error(errorCode)
+        console.error(errorMessage)
+        console.error(email)
+        console.error(credential)
       })
   }
 
