@@ -5,8 +5,5 @@ services:
     build: .
     volumes:
       - ../front/dist:/var/www/html
-      - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ../ssl:/etc/apache2/ssl
     ports:
-      - "443:443"
       - "80:80"
