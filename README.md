@@ -9,7 +9,7 @@
 3. dockerのビルド・立ち上げ
 ```
 cd back
-docker compose --env-file ./api/.env up --build
+docker compose --env-file ./api/.env -f compose.yml up --build
 ```
 4. DBのマイグレーション
 ```
