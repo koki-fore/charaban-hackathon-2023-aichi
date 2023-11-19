@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: db
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -21,9 +21,20 @@ services:
       - db
     container_name: fast_api
     build: .
-    ports:
-      - ${API_PORT}:${API_PORT}
     volumes:
       - ./api:/api
     env_file:
       - ./api/.env
+    expose:
+      - 8000
+
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    depends_on:
+      - api
+    ports:
+      - ${API_PORT}:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../ssl:/etc/nginx/ssl
