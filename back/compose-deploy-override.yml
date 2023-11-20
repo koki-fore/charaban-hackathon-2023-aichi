@@ -4,5 +4,4 @@ services:
   nginx:
     volumes:
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
-      - ../ssl/${KEY_FILE_NAME}:${KEY_FILE_PATH}/${KEY_FILE_NAME}
-      - ../ssl/${CERT_FILE_NAME}:${CERT_FILE_PATH}/${CERT_FILE_NAME}
+      - ../ssl/:${KEYS_DIR}/

@@ -14,8 +14,8 @@ server {
   listen 443 ssl;
   server_name ${DOMAIN_NAME};
 
-  ssl_certificate ${CERT_FILE_PATH}/${CERT_FILE_NAME};
-  ssl_certificate_key ${KEY_FILE_PATH}/${KEY_FILE_NAME};
+  ssl_certificate ${KEYS_DIR}/${CERT_FILE_NAME};
+  ssl_certificate_key ${KEYS_DIR}/${KEY_FILE_NAME};
   ssl_protocols TLSv1.2 TLSv1.3;
 
   location / {
