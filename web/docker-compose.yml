@@ -6,7 +6,19 @@ services:
     volumes:
       - ../front/dist:/var/www/html
       - ./000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ../ssl:/etc/apache2/ssl
+      - ../ssl/${KEY_FILE_NAME}:${KEY_FILE_PATH}/${KEY_FILE_NAME}
+      - ../ssl/${CERT_FILE_NAME}:${CERT_FILE_PATH}/${CERT_FILE_NAME}
     ports:
       - "443:443"
       - "80:80"
+    env_file:
+      - .env
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    volumes:
+      - ../front/dist:/var/www/html
+      - ../ssl/${KEY_FILE_NAME}:${KEY_FILE_PATH}/${KEY_FILE_NAME}
+      - ../ssl/${CERT_FILE_NAME}:${CERT_FILE_PATH}/${CERT_FILE_NAME}
+    env_file:
+      - .env
